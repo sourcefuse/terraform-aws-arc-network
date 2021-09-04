@@ -10,6 +10,21 @@ This module is deployed with the following namespaces
 * `dev`
 
 SSH keys for the bastion host are stored in the S3 Terraform state bucket for the environment.
+
+Initilize Terraform
+```shell
+terraform init
+```
+
+Create a `dev` workspace
+```shell
+terraform workspace new dev
+```
+
+Apply Terraform
+```shell
+terraform apply -var-file=dev.tfvars
+```
  
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
