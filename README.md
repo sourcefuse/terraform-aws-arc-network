@@ -8,6 +8,8 @@ AWS Terraform module for the SourceFuse reference architecture network.
 
 This module is deployed with the following namespaces
 * `dev`
+
+SSH keys for the bastion host are stored in the S3 Terraform state bucket for the environment.
  
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

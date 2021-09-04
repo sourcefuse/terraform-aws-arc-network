@@ -19,7 +19,7 @@ module "public_subnets" {
   source              = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.14.1"
   namespace           = var.namespace
   stage               = var.environment
-  name                = "public_subnet"
+  name                = "publicsubnet"
   availability_zones  = var.availability_zones
   vpc_id              = module.vpc.vpc_id
   cidr_block          = local.public_cidr_block
@@ -35,7 +35,7 @@ module "private_subnets" {
   source             = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.14.1"
   namespace          = var.namespace
   stage              = var.environment
-  name               = "var"
+  name               = "privatesubnet"
   availability_zones = var.availability_zones
   vpc_id             = module.vpc.vpc_id
   cidr_block         = local.private_cidr_block
