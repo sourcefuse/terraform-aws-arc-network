@@ -8,6 +8,7 @@ availability_zones = [
 ]
 tags = {
   Environment = "dev"
+  ENV         = "dev"
   Project     = "sf-ref-arch"
   Creator     = "terraform"
 }
