@@ -73,3 +73,140 @@ module "ec2_bastion" {
 
   context = module.this.context
 }
+
+## security
+resource "aws_security_group" "standard_web_sg" {
+  name   = "${var.namespace}-${var.environment}-alb-standard-web-sg"
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    from_port   = 80
+    protocol    = "tcp"
+    to_port     = 80
+    cidr_blocks = var.default_ingress
+  }
+
+  ingress {
+    from_port   = 443
+    protocol    = "tcp"
+    to_port     = 443
+    cidr_blocks = var.default_ingress
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = var.default_egress
+  }
+
+  tags = merge(var.tags, tomap({
+    Name = "${var.namespace}-${var.environment}-alb-standard-web-sg"
+  }))
+}
+
+// TODO: lock down SGs below to limit traffic to the VPC
+resource "aws_security_group" "ecs_tasks_sg" {
+  name   = "${var.namespace}-${var.environment}-ecs-tasks-sg"
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    from_port = 0
+    protocol  = "tcp"
+    to_port   = 65535
+
+    cidr_blocks = var.default_ingress
+  }
+
+  egress {
+    from_port   = 0
+    protocol    = "tcp"
+    to_port     = 65535
+    cidr_blocks = var.default_egress
+  }
+
+  tags = merge(var.tags, tomap({
+    Name = "${var.namespace}-${var.environment}-ecs-tasks-sg"
+  }))
+}
+
+resource "aws_security_group" "ecs_tasks_sg" {
+  name   = "${var.namespace}-${var.environment}-ecs-tasks-sg"
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    from_port = 0
+    protocol  = "tcp"
+    to_port   = 65535
+
+    cidr_blocks = var.default_ingress
+  }
+
+  egress {
+    from_port   = 0
+    protocol    = "tcp"
+    to_port     = 65535
+    cidr_blocks = var.default_egress
+  }
+
+  tags = merge(var.tags, tomap({
+    Name = "${var.namespace}-${var.environment}-ecs-tasks-sg"
+  }))
+}
+
+resource "aws_security_group" "eks_sg" {
+  name   = "${var.namespace}-${var.environment}-ecs-tasks-sg"
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    from_port = 0
+    protocol  = "tcp"
+    to_port   = 65535
+
+    cidr_blocks = var.default_ingress
+  }
+
+  egress {
+    from_port   = 0
+    protocol    = "tcp"
+    to_port     = 65535
+    cidr_blocks = var.default_egress
+  }
+
+  tags = merge(var.tags, tomap({
+    Name = "${var.namespace}-${var.environment}-ecs-tasks-sg"
+  }))
+}
+
+resource "aws_security_group" "db_sg" {
+  name   = "${var.namespace}-${var.environment}-db-sg"
+  vpc_id = module.vpc.vpc_id
+
+  ingress {
+    description = "Ingress from VPC"
+    to_port     = 5432
+    from_port   = 5432
+    protocol    = "tcp"
+    cidr_blocks = var.default_ingress
+  }
+
+  ingress {
+    description     = "Ingress for applications"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ecs_tasks_sg.id, aws_security_group.eks_sg.id]
+  }
+
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = var.default_egress
+  }
+
+  tags = merge(var.tags, tomap({
+    Name = "${var.namespace}-${var.environment}-db-sg"
+  }))
+}
