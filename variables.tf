@@ -98,3 +98,15 @@ variable "associate_public_ip_address" {
   default     = true
   description = "Whether to associate public IP to the instance."
 }
+
+variable "default_ingress" {
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+  description = "Default ingress CIDR"
+}
+
+variable "default_egress" {
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+  description = "Default egress CIDR"
+}
