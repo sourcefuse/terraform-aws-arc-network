@@ -29,8 +29,11 @@ pipeline {
                   secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
               ]]) {
                   sh "echo ${env.BRANCH_NAME}"
+                  sh "tfenv install"
                   sh "terraform -v"
                   sh "terraform init"
+                  sh "terraform workspace select dev"
+                  sh "terraform plan -var-file=dev.tfvars"
                   sh "terraform apply -auto-approve -var-file=dev.tfvars"
               }
             }
