@@ -31,7 +31,7 @@ pipeline {
                   sh "echo ${env.BRANCH_NAME}"
                   sh "terraform -v"
                   sh "terraform init"
-                  sh "terraform plan -var-file=dev.tfvars"
+                  sh "terraform apply -auto-approve -var-file=dev.tfvars"
               }
             }
         }
