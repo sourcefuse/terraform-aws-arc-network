@@ -130,32 +130,8 @@ resource "aws_security_group" "ecs_tasks_sg" {
   }))
 }
 
-resource "aws_security_group" "ecs_tasks_sg" {
-  name   = "${var.namespace}-${var.environment}-ecs-tasks-sg"
-  vpc_id = module.vpc.vpc_id
-
-  ingress {
-    from_port = 0
-    protocol  = "tcp"
-    to_port   = 65535
-
-    cidr_blocks = var.default_ingress
-  }
-
-  egress {
-    from_port   = 0
-    protocol    = "tcp"
-    to_port     = 65535
-    cidr_blocks = var.default_egress
-  }
-
-  tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-ecs-tasks-sg"
-  }))
-}
-
 resource "aws_security_group" "eks_sg" {
-  name   = "${var.namespace}-${var.environment}-ecs-tasks-sg"
+  name   = "${var.namespace}-${var.environment}-eks-sg"
   vpc_id = module.vpc.vpc_id
 
   ingress {
