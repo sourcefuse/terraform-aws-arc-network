@@ -27,7 +27,8 @@ module "public_subnets" {
   igw_id              = module.vpc.igw_id
   nat_gateway_enabled = "true"
   tags = merge(var.tags, {
-    "Name" = "${var.namespace}-${var.environment}-public-subnet"
+    "Name" = "${var.namespace}-${var.environment}-public-subnet",
+    "kubernetes.io/role/elb" : 1
   })
 }
 
@@ -41,7 +42,8 @@ module "private_subnets" {
   cidr_block         = local.private_cidr_block
   type               = "private"
   tags = merge(var.tags, tomap({
-    "Name" = "${var.namespace}-${var.environment}-db-private-subnet"
+    "Name" = "${var.namespace}-${var.environment}-db-private-subnet",
+    "kubernetes.io/role/internal-elb" : 1
   }))
   az_ngw_ids = module.public_subnets.az_ngw_ids
 }
