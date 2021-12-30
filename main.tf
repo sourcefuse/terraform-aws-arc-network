@@ -1,10 +1,18 @@
+module "tags" {
+  source = "git::ssh://git@github.com/sourcefuse/terraform-aws-ref-arch-eks.git//terraform-refarch-tags?ref=50a1aaf14d3c348f866f4cd02869924b7bf3359c"
+
+  environment = var.environment
+  project = var.project
+  role = "vpc infra"
+}
+
 module "vpc" {
   source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=0.27.0"
   namespace  = var.namespace
   name       = "vpc"
   stage      = var.environment
   cidr_block = var.vpc_cidr_block
-  tags = merge(var.tags, tomap({
+  tags = merge(module.tags.tags, var.tags, tomap({
     Name         = "${var.namespace}-${var.environment}-vpc",
     LastModified = local.datetime
   }))
@@ -26,7 +34,7 @@ module "public_subnets" {
   type                = "public"
   igw_id              = module.vpc.igw_id
   nat_gateway_enabled = "true"
-  tags = merge(var.tags, {
+  tags = merge(module.tags.tags, var.tags, {
     "Name" = "${var.namespace}-${var.environment}-public-subnet"
   })
 }
@@ -40,7 +48,7 @@ module "private_subnets" {
   vpc_id             = module.vpc.vpc_id
   cidr_block         = local.private_cidr_block
   type               = "private"
-  tags = merge(var.tags, tomap({
+  tags = merge(module.tags.tags, var.tags, tomap({
     "Name" = "${var.namespace}-${var.environment}-db-private-subnet"
   }))
   az_ngw_ids = module.public_subnets.az_ngw_ids
@@ -70,7 +78,7 @@ module "ec2_bastion" {
   user_data                   = var.user_data
   vpc_id                      = module.vpc.vpc_id
   associate_public_ip_address = var.associate_public_ip_address
-
+  tags                        = merge(module.tags.tags, var.tags)
   context = module.this.context
 }
 
@@ -100,7 +108,7 @@ resource "aws_security_group" "standard_web_sg" {
     cidr_blocks = var.default_egress
   }
 
-  tags = merge(var.tags, tomap({
+  tags = merge(module.tags.tags, var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-alb-standard-web-sg"
   }))
 }
@@ -125,7 +133,7 @@ resource "aws_security_group" "ecs_tasks_sg" {
     cidr_blocks = var.default_egress
   }
 
-  tags = merge(var.tags, tomap({
+  tags = merge(module.tags.tags, var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-ecs-tasks-sg"
   }))
 }
@@ -149,7 +157,7 @@ resource "aws_security_group" "eks_sg" {
     cidr_blocks = var.default_egress
   }
 
-  tags = merge(var.tags, tomap({
+  tags = merge(module.tags.tags, var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-ecs-tasks-sg"
   }))
 }
@@ -182,7 +190,7 @@ resource "aws_security_group" "db_sg" {
     cidr_blocks = var.default_egress
   }
 
-  tags = merge(var.tags, tomap({
+  tags = merge(module.tags.tags, var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-db-sg"
   }))
 }

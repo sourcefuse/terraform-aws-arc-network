@@ -4,6 +4,12 @@ variable "environment" {
   default     = "dev"
 }
 
+variable "project" {
+   type        = string
+   description = "Name of the project these resources are being created for"
+   default     = ""
+}
+
 variable "profile" {
   type        = string
   description = "AWS Config profile"
