@@ -47,6 +47,7 @@ terraform apply -var-file=dev.tfvars
 | <a name="module_ec2_bastion"></a> [ec2\_bastion](#module\_ec2\_bastion) | git::https://github.com/cloudposse/terraform-aws-ec2-bastion-server.git | 0.27.0 |
 | <a name="module_private_subnets"></a> [private\_subnets](#module\_private\_subnets) | git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git | 0.14.1 |
 | <a name="module_public_subnets"></a> [public\_subnets](#module\_public\_subnets) | git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git | 0.14.1 |
+| <a name="module_tags"></a> [tags](#module\_tags) | git::ssh://git@github.com/sourcefuse/terraform-aws-ref-arch-eks.git//terraform-refarch-tags | 50a1aaf14d3c348f866f4cd02869924b7bf3359c |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.24.1 |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | git::https://github.com/cloudposse/terraform-aws-vpc.git | 0.27.0 |
 
@@ -84,6 +85,7 @@ terraform apply -var-file=dev.tfvars
 | <a name="input_name"></a> [name](#input\_name) | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace of the project, i.e. refarch | `string` | `"refarch"` | no |
 | <a name="input_profile"></a> [profile](#input\_profile) | AWS Config profile | `string` | `"sf_ref_arch"` | no |
+| <a name="input_project"></a> [project](#input\_project) | Name of the project these resources are being created for | `string` | `""` | no |
 | <a name="input_regex_replace_chars"></a> [regex\_replace\_chars](#input\_regex\_replace\_chars) | Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
 | <a name="input_region"></a> [region](#input\_region) | AWS Region | `string` | n/a | yes |
 | <a name="input_root_block_device_encrypted"></a> [root\_block\_device\_encrypted](#input\_root\_block\_device\_encrypted) | Whether to encrypt the root block device | `bool` | `false` | no |

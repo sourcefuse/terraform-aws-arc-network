@@ -5,9 +5,9 @@ variable "environment" {
 }
 
 variable "project" {
-   type        = string
-   description = "Name of the project these resources are being created for"
-   default     = ""
+  type        = string
+  description = "Name of the project these resources are being created for"
+  default     = ""
 }
 
 variable "profile" {

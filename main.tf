@@ -2,8 +2,8 @@ module "tags" {
   source = "git::ssh://git@github.com/sourcefuse/terraform-aws-ref-arch-eks.git//terraform-refarch-tags?ref=50a1aaf14d3c348f866f4cd02869924b7bf3359c"
 
   environment = var.environment
-  project = var.project
-  role = "vpc infra"
+  project     = var.project
+  role        = "vpc infra"
 }
 
 module "vpc" {
@@ -79,7 +79,7 @@ module "ec2_bastion" {
   vpc_id                      = module.vpc.vpc_id
   associate_public_ip_address = var.associate_public_ip_address
   tags                        = merge(module.tags.tags, var.tags)
-  context = module.this.context
+  context                     = module.this.context
 }
 
 ## security
