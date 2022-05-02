@@ -13,10 +13,12 @@ on:
 
 jobs:
   tflint:
-    runs-on: my-custom-runner
+    runs-on:
+      - self-hosted
+      - refarch
     name: tflint
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
 
       - uses: terraform-linters/setup-tflint@v1
         with:
@@ -32,11 +34,12 @@ jobs:
         run: tflint -f compact
 
   checkov:
-    runs-on: my-custom-runner
+    runs-on:
+      - self-hosted
+      - refarch
     name: checkov
     steps:
-      - uses: actions/checkout@master
-
+      - uses: actions/checkout@v2
       - name: Run Checkov action
         id: checkov
         uses: bridgecrewio/checkov-action@master
