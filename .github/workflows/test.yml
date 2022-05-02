@@ -34,11 +34,12 @@ jobs:
         run: tflint -f compact
 
   checkov:
-    runs-on: my-custom-runner
+    runs-on:
+      - self-hosted
+      - refarch
     name: checkov
     steps:
       - uses: actions/checkout@master
-
       - name: Run Checkov action
         id: checkov
         uses: bridgecrewio/checkov-action@master

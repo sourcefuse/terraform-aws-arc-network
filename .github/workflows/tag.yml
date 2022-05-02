@@ -15,7 +15,6 @@ jobs:
       - refarch
     steps:
       - uses: actions/checkout@v2
-
       - name: Set GIT_TAG
         run: |
           echo "VERSION=$(cat .version | tr -d " \t\n\r")" >> $GITHUB_ENV
