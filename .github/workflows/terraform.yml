@@ -101,6 +101,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SF_REF_ARCH_SECRET_ACCESS_KEY }}
 
       - uses: actions/github-script@0.9.0
+      - uses: actions/checkout@v2
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
@@ -134,7 +135,7 @@ jobs:
       - self-hosted
       - refarch
     env:
-      working-directory: ./example
+      working-directory: example
     steps:
       - uses: hashicorp/setup-terraform@v1
         with:
