@@ -3,10 +3,9 @@
 ## defaults
 ################################################################
 provider "aws" {
-  region  = var.region
-  profile = var.profile
+  region                  = var.region
+  profile                 = var.profile
 }
-
 
 module "tags" {
   source = "git@github.com:sourcefuse/terraform-aws-refarch-tags?ref=1.0.1"
