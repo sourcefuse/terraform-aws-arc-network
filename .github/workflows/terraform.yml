@@ -19,7 +19,7 @@ jobs:
       - self-hosted
       - refarch
     env:
-      working-directory: ./example
+      working-directory: example
     steps:
       - uses: hashicorp/setup-terraform@v1
         with:
