@@ -24,7 +24,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.5
-
+      - uses: actions/checkout@v2
       - name: Show files
         id: show-files
         run: ls -la
