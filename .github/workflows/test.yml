@@ -13,7 +13,9 @@ on:
 
 jobs:
   tflint:
-    runs-on: my-custom-runner
+    runs-on:
+      - self-hosted
+      - refarch
     name: tflint
     steps:
       - uses: actions/checkout@master
