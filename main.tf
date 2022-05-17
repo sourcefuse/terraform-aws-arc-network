@@ -1,20 +1,3 @@
-
-module "ec2_bastion" {
-  source = "git::https://github.com/cloudposse/terraform-aws-ec2-bastion-server.git?ref=0.27.0"
-
-  enabled = module.this.disabled
-
-  instance_type               = var.instance_type
-  security_groups             = compact(concat([module.vpc.vpc_default_security_group_id], var.security_groups))
-  subnets                     = [for sub_id in module.public_subnets.az_subnet_ids : sub_id]
-  key_name                    = module.aws_key_pair.key_name
-  user_data                   = var.user_data
-  vpc_id                      = module.vpc.vpc_id
-  associate_public_ip_address = var.associate_public_ip_address
-
-  context = module.this.context
-}
-
 module "vpc" {
   source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=0.27.0"
   namespace  = var.namespace
