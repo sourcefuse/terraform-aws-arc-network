@@ -1,0 +1,4 @@
+site_name: terraform-aws-ref-arch-network
+site_description: Terraform module for setting up Sourcefuse AWS network components in Terraform.
+plugins:
+  - techdocs-core
