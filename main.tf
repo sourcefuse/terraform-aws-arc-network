@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    mycloud = {
+      source  = "hashicorp/aws"
+      version = ">= 3.0"
+    }
+  }
+}
+
 module "aws_key_pair" {
   source              = "cloudposse/key-pair/aws"
   version             = "0.18.2"
