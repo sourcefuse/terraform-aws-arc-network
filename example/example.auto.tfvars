@@ -1,5 +1,5 @@
 region         = "us-east-1"
-environment    = "dev"
+environment    = "example"
 profile        = "sf_ref_arch"
 vpc_cidr_block = "15.0.0.0/16"
 availability_zones = [
@@ -13,8 +13,6 @@ tags = {
   Creator     = "terraform"
 }
 
-stage            = "dev"
-name             = "ec2-bastion"
 instance_type    = "t3a.nano"
 ssh_key_path     = "./secrets"
 generate_ssh_key = true
