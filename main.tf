@@ -1,8 +1,18 @@
+module "aws_key_pair" {
+  source              = "cloudposse/key-pair/aws"
+  version             = "0.18.2"
+  attributes          = ["ssh", "key"]
+  ssh_public_key_path = var.ssh_key_path
+  generate_ssh_key    = var.generate_ssh_key
 
+  context = module.this.context
+
+  enabled = var.ec2_bastion_enabled
+}
 module "ec2_bastion" {
   source = "git::https://github.com/cloudposse/terraform-aws-ec2-bastion-server.git?ref=0.27.0"
 
-  enabled = module.this.enabled
+  enabled = var.ec2_bastion_enabled
 
   instance_type               = var.instance_type
   security_groups             = compact(concat([module.vpc.vpc_default_security_group_id], var.security_groups))
@@ -61,17 +71,6 @@ module "private_subnets" {
     "Name" = "${var.namespace}-${var.environment}-db-private-subnet"
   }))
   az_ngw_ids = module.public_subnets.az_ngw_ids
-}
-
-
-module "aws_key_pair" {
-  source              = "cloudposse/key-pair/aws"
-  version             = "0.18.2"
-  attributes          = ["ssh", "key"]
-  ssh_public_key_path = var.ssh_key_path
-  generate_ssh_key    = var.generate_ssh_key
-
-  context = module.this.context
 }
 
 ## security

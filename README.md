@@ -29,9 +29,7 @@ terraform apply -var-file=dev.tfvars
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0.5 |
+No requirements.
 
 ## Providers
 
@@ -71,6 +69,7 @@ terraform apply -var-file=dev.tfvars
 | <a name="input_default_egress"></a> [default\_egress](#input\_default\_egress) | Default egress CIDR | `list(string)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
 | <a name="input_default_ingress"></a> [default\_ingress](#input\_default\_ingress) | Default ingress CIDR | `list(string)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
 | <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`.<br>Defaults to `-` (hyphen). Set to `""` to use no delimiter at all. | `string` | `null` | no |
+| <a name="input_ec2_bastion_enabled"></a> [ec2\_bastion\_enabled](#input\_ec2\_bastion\_enabled) | Boolean toggle to create an EC2 instance for a bastion host | `bool` | `true` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating any resources | `bool` | `null` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Name of the environment, i.e. dev, stage, prod | `string` | `"dev"` | no |
 | <a name="input_generate_ssh_key"></a> [generate\_ssh\_key](#input\_generate\_ssh\_key) | Whether or not to generate an SSH key | `bool` | n/a | yes |
