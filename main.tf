@@ -1,8 +1,7 @@
-
 module "ec2_bastion" {
   source = "git::https://github.com/cloudposse/terraform-aws-ec2-bastion-server.git?ref=0.27.0"
 
-  enabled = module.this.enabled
+  enabled = var.ec2_bastion_enabled
 
   instance_type               = var.instance_type
   security_groups             = compact(concat([module.vpc.vpc_default_security_group_id], var.security_groups))

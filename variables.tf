@@ -110,3 +110,9 @@ variable "default_egress" {
   default     = ["0.0.0.0/0"]
   description = "Default egress CIDR"
 }
+
+variable "ec2_bastion_enabled" {
+  default     = true
+  description = "Boolean toggle to create an EC2 instance for a bastion host"
+  type        = bool
+}
