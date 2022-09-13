@@ -4,17 +4,6 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "profile" {
-  type        = string
-  description = "AWS Config profile"
-  default     = "sf_ref_arch"
-}
-
-variable "region" {
-  type        = string
-  description = "AWS Region"
-}
-
 variable "namespace" {
   type        = string
   description = "Namespace of the project, i.e. refarch"
@@ -34,12 +23,6 @@ variable "availability_zones" {
 variable "vpc_cidr_block" {
   type        = string
   description = "CIDR block for the VPC to use."
-}
-
-variable "zone_id" {
-  type        = string
-  default     = ""
-  description = "Route53 DNS Zone ID"
 }
 
 variable "instance_type" {
