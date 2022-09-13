@@ -27,10 +27,8 @@ module "network" {
   tags               = module.tags.tags
   generate_ssh_key   = var.generate_ssh_key
   availability_zones = var.availability_zones
-  region             = var.region
   security_groups    = []
   vpc_cidr_block     = var.vpc_cidr_block
   ssh_key_path       = var.ssh_key_path
   environment        = var.environment
-  profile            = var.profile
 }
