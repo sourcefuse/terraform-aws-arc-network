@@ -13,9 +13,7 @@ on:
 
 jobs:
   tflint:
-    runs-on:
-      - self-hosted
-      - refarch
+    runs-on: ubuntu-latest
     name: tflint
     steps:
       - uses: actions/checkout@v2
