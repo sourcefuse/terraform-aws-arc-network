@@ -13,9 +13,7 @@ on:
 
 jobs:
   tflint:
-    runs-on:
-      - self-hosted
-      - refarch
+    runs-on: ubuntu-latest
     name: tflint
     steps:
       - uses: actions/checkout@v2
@@ -34,9 +32,7 @@ jobs:
         run: tflint -f compact
 
   checkov:
-    runs-on:
-      - self-hosted
-      - refarch
+    runs-on: ubuntu-latest
     name: checkov
     steps:
       - uses: actions/checkout@v2
@@ -47,7 +43,7 @@ jobs:
         with:
           directory: .
           quiet: true # optional: display only failed checks
-          soft_fail: false # optional: do not return an error code if there are failed checks.
+          soft_fail: true # optional: do not return an error code if there are failed checks.
           framework: terraform # optional: run only on a specific infrastructure {cloudformation,terraform,kubernetes,all}
           output_format: json # optional: the output format, one of: cli, json, junitxml, github_failed_only
           download_external_modules: true

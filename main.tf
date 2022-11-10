@@ -40,7 +40,6 @@ module "public_subnets" {
     "Name" = "${var.namespace}-${var.environment}-public-subnet"
   })
 }
-
 module "private_subnets" {
   source             = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.14.1"
   namespace          = var.namespace
