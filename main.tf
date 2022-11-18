@@ -59,6 +59,7 @@ module "private_subnets" {
 resource "aws_security_group" "standard_web_sg" {
   name   = "${var.namespace}-${var.environment}-alb-standard-web-sg"
   vpc_id = module.vpc.vpc_id
+  description = "standard web security group"
 
   ingress {
     from_port   = 80
@@ -90,6 +91,7 @@ resource "aws_security_group" "standard_web_sg" {
 resource "aws_security_group" "ecs_tasks_sg" {
   name   = "${var.namespace}-${var.environment}-ecs-tasks-sg"
   vpc_id = module.vpc.vpc_id
+  description = "ecs tasks security group"
 
   ingress {
     from_port = 0
@@ -114,6 +116,7 @@ resource "aws_security_group" "ecs_tasks_sg" {
 resource "aws_security_group" "eks_sg" {
   name   = "${var.namespace}-${var.environment}-eks-sg"
   vpc_id = module.vpc.vpc_id
+  description = "eks security group"
 
   ingress {
     from_port = 0
@@ -138,6 +141,7 @@ resource "aws_security_group" "eks_sg" {
 resource "aws_security_group" "db_sg" {
   name   = "${var.namespace}-${var.environment}-db-sg"
   vpc_id = module.vpc.vpc_id
+  description = "database security group"
 
   ingress {
     description = "Ingress from VPC"
