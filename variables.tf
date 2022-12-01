@@ -22,7 +22,7 @@ variable "availability_zones" {
   description = "List of availability zones to deploy resources in."
 }
 
-variable "vpc_cidr_block" {
+variable "ipv4_primary_cidr_block" {
   type        = string
   description = "CIDR block for the VPC to use."
 }

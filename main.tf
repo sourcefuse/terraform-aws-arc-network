@@ -7,7 +7,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.0"
+      version = "~> 4.44"
     }
   }
 }
@@ -18,10 +18,10 @@ terraform {
 module "vpc" {
   source = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=2.0.0"
 
-  name       = "vpc"
-  namespace  = var.namespace
-  stage      = var.environment
-  cidr_block = var.vpc_cidr_block
+  name                    = "vpc"
+  namespace               = var.namespace
+  stage                   = var.environment
+  ipv4_primary_cidr_block = var.ipv4_primary_cidr_block
 
   tags = var.tags
 }

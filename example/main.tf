@@ -1,34 +1,40 @@
-
-################################################################
+################################################################################
 ## defaults
-################################################################
+################################################################################
+terraform {
+  required_version = "~> 1.3"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.44"
+    }
+  }
+}
+
 provider "aws" {
-  region = var.region
+  region  = var.region
+  profile = var.profile
 }
 
 module "tags" {
   source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.0.4"
 
-  environment = terraform.workspace
-  project     = "refarch-devops-infra"
-
-  extra_tags = {
-    MonoRepo     = "True"
-    MonoRepoPath = "terraform/resources/network"
-  }
+  environment = var.environment
+  project     = "terraform-aws-ref-arch-network"
 }
 
-################################################################
+################################################################################
 ## network
-################################################################
+################################################################################
 module "network" {
-  source             = "../."
-  namespace          = var.namespace
-  tags               = module.tags.tags
-  generate_ssh_key   = var.generate_ssh_key
-  availability_zones = var.availability_zones
-  security_groups    = []
-  vpc_cidr_block     = var.vpc_cidr_block
-  ssh_key_path       = var.ssh_key_path
-  environment        = var.environment
+  source = "../."
+
+  namespace   = var.namespace
+  environment = var.environment
+
+  ipv4_primary_cidr_block = var.ipv4_primary_cidr_block
+  availability_zones      = var.availability_zones
+
+  tags = module.tags.tags
 }
