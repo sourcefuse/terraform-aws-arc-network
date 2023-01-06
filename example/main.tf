@@ -7,7 +7,7 @@ provider "aws" {
 }
 
 module "tags" {
-  source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.0.4"
+  source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.1.0"
 
   environment = terraform.workspace
   project     = "refarch-devops-infra"
@@ -25,10 +25,7 @@ module "network" {
   source             = "../."
   namespace          = var.namespace
   tags               = module.tags.tags
-  generate_ssh_key   = var.generate_ssh_key
   availability_zones = var.availability_zones
-  security_groups    = []
   vpc_cidr_block     = var.vpc_cidr_block
-  ssh_key_path       = var.ssh_key_path
   environment        = var.environment
 }
