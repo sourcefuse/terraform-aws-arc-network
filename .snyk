@@ -1,0 +1,43 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-CC-TF-73:
+    - main.tf > resource > aws_security_group[db_sg] > egress:
+        reason: AWS Security Group allows open egress
+        expires: 2024-04-01T00:00:00.000Z
+        created: 2022-11-14T18:20:39.256Z
+    - main.tf > resource > aws_security_group[standard_web_sg] > egress:  
+        reason: AWS Security Group allows open egress
+        expires: 2024-04-01T00:00:00.000Z
+        created: 2022-11-14T18:20:39.256Z 
+    - main.tf > resource > aws_security_group[ecs_tasks_sg] > egress:
+        reason: AWS Security Group allows open egress
+        expires: 2024-04-01T00:00:00.000Z
+        created: 2022-11-14T18:20:39.256Z 
+    - main.tf > resource > aws_security_group[eks_sg] > egress:
+        reason: AWS Security Group allows open egress
+        expires: 2024-04-01T00:00:00.000Z
+        created: 2022-11-14T18:20:39.256Z  
+  SNYK-CC-TF-1:
+    - main.tf > input > resource > aws_security_group[db_sg] > ingress[0]:  
+        reason: Security Group allows open ingress
+        expires: 2024-04-01T00:00:00.000Z
+        created: 2022-11-14T18:20:39.256Z 
+    - main.tf > input > resource > aws_security_group[eks_sg] > ingress:
+        reason: Security Group allows open ingress
+        expires: 2024-04-01T00:00:00.000Z
+        created: 2022-11-14T18:20:39.256Z 
+    - main.tf > input > resource > aws_security_group[standard_web_sg] > ingress[0]:
+        reason: Security Group allows open ingress
+        expires: 2024-04-01T00:00:00.000Z
+        created: 2022-11-14T18:20:39.256Z  
+    - main.tf > input > resource > aws_security_group[standard_web_sg] > ingress[1]:  
+        reason: Security Group allows open ingress
+        expires: 2024-04-01T00:00:00.000Z
+        created: 2022-11-14T18:20:39.256Z 
+    - main.tf > input > resource > aws_security_group[ecs_tasks_sg] > ingress:
+        reason: Security Group allows open ingress
+        expires: 2024-04-01T00:00:00.000Z
+        created: 2022-11-14T18:20:39.256Z  
+patch: {}
