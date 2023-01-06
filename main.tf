@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.0.5"
+  required_version = ">= 1.0.8"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -57,8 +57,9 @@ module "private_subnets" {
 
 ## security
 resource "aws_security_group" "standard_web_sg" {
-  name   = "${var.namespace}-${var.environment}-alb-standard-web-sg"
-  vpc_id = module.vpc.vpc_id
+  name        = "${var.namespace}-${var.environment}-alb-standard-web-sg"
+  vpc_id      = module.vpc.vpc_id
+  description = "Standard web security group"
 
   ingress {
     from_port   = 80
@@ -88,8 +89,9 @@ resource "aws_security_group" "standard_web_sg" {
 
 // TODO: lock down SGs below to limit traffic to the VPC
 resource "aws_security_group" "ecs_tasks_sg" {
-  name   = "${var.namespace}-${var.environment}-ecs-tasks-sg"
-  vpc_id = module.vpc.vpc_id
+  name        = "${var.namespace}-${var.environment}-ecs-tasks-sg"
+  vpc_id      = module.vpc.vpc_id
+  description = "ECS tasks security group"
 
   ingress {
     from_port = 0
@@ -112,8 +114,9 @@ resource "aws_security_group" "ecs_tasks_sg" {
 }
 
 resource "aws_security_group" "eks_sg" {
-  name   = "${var.namespace}-${var.environment}-eks-sg"
-  vpc_id = module.vpc.vpc_id
+  name        = "${var.namespace}-${var.environment}-eks-sg"
+  vpc_id      = module.vpc.vpc_id
+  description = "EKS security group"
 
   ingress {
     from_port = 0
@@ -136,8 +139,9 @@ resource "aws_security_group" "eks_sg" {
 }
 
 resource "aws_security_group" "db_sg" {
-  name   = "${var.namespace}-${var.environment}-db-sg"
-  vpc_id = module.vpc.vpc_id
+  name        = "${var.namespace}-${var.environment}-db-sg"
+  vpc_id      = module.vpc.vpc_id
+  description = "Database security group"
 
   ingress {
     description = "Ingress from VPC"
@@ -154,7 +158,6 @@ resource "aws_security_group" "db_sg" {
     protocol        = "tcp"
     security_groups = [aws_security_group.ecs_tasks_sg.id, aws_security_group.eks_sg.id]
   }
-
 
   egress {
     from_port   = 0
