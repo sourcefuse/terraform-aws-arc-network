@@ -2,11 +2,12 @@
 ## defaults
 ################################################################
 terraform {
-  required_version = ">= 1.0.8"
+  required_version = "~> 1.3"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 3.0"
+      version = "~> 4.9"
     }
   }
 }
@@ -18,12 +19,11 @@ provider "aws" {
 module "tags" {
   source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.1.0"
 
-  environment = terraform.workspace
-  project     = "refarch-devops-infra"
+  environment = var.environment
+  project     = "terraform-aws-ref-arch-network"
 
   extra_tags = {
-    MonoRepo     = "True"
-    MonoRepoPath = "terraform/resources/network"
+    Example = "True"
   }
 }
 
@@ -31,10 +31,12 @@ module "tags" {
 ## network
 ################################################################
 module "network" {
-  source             = "../."
-  namespace          = var.namespace
-  tags               = module.tags.tags
-  availability_zones = var.availability_zones
-  vpc_cidr_block     = var.vpc_cidr_block
-  environment        = var.environment
+  source = "../."
+
+  namespace                   = var.namespace
+  environment                 = var.environment
+  availability_zones          = var.availability_zones
+  vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
+
+  tags = module.tags.tags
 }
