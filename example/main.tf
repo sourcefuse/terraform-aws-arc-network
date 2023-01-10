@@ -1,43 +1,40 @@
-################################################################################
+################################################################
 ## defaults
-################################################################################
+################################################################
 terraform {
-  required_version = "~> 1.3"
-
+  required_version = ">= 1.0.8"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.44"
+      version = ">= 3.0"
     }
   }
 }
 
 provider "aws" {
-  region  = var.region
-  profile = var.profile
+  region = var.region
 }
 
 module "tags" {
-  source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.0.4"
+  source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.1.0"
 
-  environment = var.environment
-  project     = "terraform-aws-ref-arch-network"
+  environment = terraform.workspace
+  project     = "refarch-devops-infra"
+
+  extra_tags = {
+    MonoRepo     = "True"
+    MonoRepoPath = "terraform/resources/network"
+  }
 }
 
-################################################################################
+################################################################
 ## network
-################################################################################
+################################################################
 module "network" {
-  source = "../."
-
-  namespace   = var.namespace
-  environment = var.environment
-  region      = var.region
-
-  ipv4_primary_cidr_block    = var.ipv4_primary_cidr_block
-  availability_zones         = var.availability_zones
-  enable_bastion_host        = true
-  authorized_ssh_cidr_blocks = ["0.0.0.0/0"]
-
-  tags = module.tags.tags
+  source             = "../."
+  namespace          = var.namespace
+  tags               = module.tags.tags
+  availability_zones = var.availability_zones
+  vpc_cidr_block     = var.vpc_cidr_block
+  environment        = var.environment
 }
