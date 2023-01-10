@@ -7,7 +7,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0"
+      version = "~> 4.9"
     }
   }
 }
@@ -33,10 +33,10 @@ module "tags" {
 module "network" {
   source = "../."
 
-  namespace          = var.namespace
-  environment        = var.environment
-  availability_zones = var.availability_zones
-  vpc_cidr_block     = var.vpc_cidr_block
+  namespace                   = var.namespace
+  environment                 = var.environment
+  availability_zones          = var.availability_zones
+  vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
 
   tags = module.tags.tags
 }

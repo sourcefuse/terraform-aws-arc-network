@@ -7,35 +7,55 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.0"
+      version = ">= 3.0.0, >= 4.0.0, >= 4.9.0"
     }
   }
 }
 
 ################################################################################
-## network
+## vpc
 ################################################################################
 module "vpc" {
-  source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=2.0.0"
-  namespace  = var.namespace
-  name       = "vpc"
-  stage      = var.environment
-  cidr_block = var.vpc_cidr_block
+  source = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=2.0.0"
+
+  name      = "vpc"
+  namespace = var.namespace
+  stage     = var.environment
+
+  ## networking / dns
+  default_network_acl_deny_all  = false # TODO - make into variable
+  default_route_table_no_routes = false # TODO - make into variable
+  internet_gateway_enabled      = true  # TODO - make into variable
+  dns_hostnames_enabled         = true  # TODO - make into variable
+  dns_support_enabled           = true  # TODO - make into variable
+
+  ## security
+  default_security_group_deny_all = true # TODO - make into variable
+
+  ## ipv4 support
+  ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
+
+  ## ipv6 support
+  assign_generated_ipv6_cidr_block          = true  # TODO - make into variable
+  ipv6_egress_only_internet_gateway_enabled = false # TODO - make into variable
+
   tags = merge(var.tags, tomap({
-    Name         = "${var.namespace}-${var.environment}-vpc",
-    LastModified = local.datetime
+    Name = "${var.namespace}-${var.environment}-vpc",
   }))
 }
 
+################################################################################
+## subnets
+################################################################################
 module "public_subnets" {
-  source              = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
+  source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
+
   namespace           = var.namespace
   stage               = var.environment
-  name                = "publicsubnet"
-  availability_zones  = var.availability_zones
-  vpc_id              = module.vpc.vpc_id
-  cidr_block          = local.public_cidr_block
   type                = "public"
+  vpc_id              = module.vpc.vpc_id
+  availability_zones  = var.availability_zones
+  cidr_block          = local.public_cidr_block
   igw_id              = module.vpc.igw_id
   nat_gateway_enabled = "true"
 
@@ -45,135 +65,17 @@ module "public_subnets" {
 }
 
 module "private_subnets" {
-  source             = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
+  source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
+
   namespace          = var.namespace
   stage              = var.environment
-  name               = "privatesubnet"
-  availability_zones = var.availability_zones
-  vpc_id             = module.vpc.vpc_id
-  cidr_block         = local.private_cidr_block
   type               = "private"
+  vpc_id             = module.vpc.vpc_id
+  availability_zones = var.availability_zones
+  cidr_block         = local.private_cidr_block
   az_ngw_ids         = module.public_subnets.az_ngw_ids
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-db-private-subnet"
-  }))
-}
-
-################################################################################
-## security
-################################################################################
-resource "aws_security_group" "standard_web_sg" {
-  name        = "${var.namespace}-${var.environment}-alb-standard-web-sg"
-  vpc_id      = module.vpc.vpc_id
-  description = "Standard web security group"
-
-  ingress {
-    from_port   = 80
-    protocol    = "tcp"
-    to_port     = 80
-    cidr_blocks = var.default_ingress
-  }
-
-  ingress {
-    from_port   = 443
-    protocol    = "tcp"
-    to_port     = 443
-    cidr_blocks = var.default_ingress
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = var.default_egress
-  }
-
-  tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-alb-standard-web-sg"
-  }))
-}
-
-// TODO: lock down SGs below to limit traffic to the VPC
-resource "aws_security_group" "ecs_tasks_sg" {
-  name        = "${var.namespace}-${var.environment}-ecs-tasks-sg"
-  vpc_id      = module.vpc.vpc_id
-  description = "ECS tasks security group"
-
-  ingress {
-    from_port = 0
-    protocol  = "tcp"
-    to_port   = 65535
-
-    cidr_blocks = var.default_ingress
-  }
-
-  egress {
-    from_port   = 0
-    protocol    = "tcp"
-    to_port     = 65535
-    cidr_blocks = var.default_egress
-  }
-
-  tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-ecs-tasks-sg"
-  }))
-}
-
-resource "aws_security_group" "eks_sg" {
-  name        = "${var.namespace}-${var.environment}-eks-sg"
-  vpc_id      = module.vpc.vpc_id
-  description = "EKS security group"
-
-  ingress {
-    from_port = 0
-    protocol  = "tcp"
-    to_port   = 65535
-
-    cidr_blocks = var.default_ingress
-  }
-
-  egress {
-    from_port   = 0
-    protocol    = "tcp"
-    to_port     = 65535
-    cidr_blocks = var.default_egress
-  }
-
-  tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-ecs-tasks-sg"
-  }))
-}
-
-resource "aws_security_group" "db_sg" {
-  name        = "${var.namespace}-${var.environment}-db-sg"
-  vpc_id      = module.vpc.vpc_id
-  description = "Database security group"
-
-  ingress {
-    description = "Ingress from VPC"
-    to_port     = 5432
-    from_port   = 5432
-    protocol    = "tcp"
-    cidr_blocks = var.default_ingress
-  }
-
-  ingress {
-    description     = "Ingress for applications"
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.ecs_tasks_sg.id, aws_security_group.eks_sg.id]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = var.default_egress
-  }
-
-  tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-db-sg"
+    Name = "${var.namespace}-${var.environment}-private-subnet"
   }))
 }

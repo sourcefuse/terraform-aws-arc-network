@@ -18,19 +18,7 @@ variable "availability_zones" {
   description = "List of availability zones to deploy resources in."
 }
 
-variable "vpc_cidr_block" {
+variable "vpc_ipv4_primary_cidr_block" {
   type        = string
-  description = "CIDR block for the VPC to use."
-}
-
-variable "default_ingress" {
-  type        = list(string)
-  default     = ["0.0.0.0/0"]
-  description = "Default ingress CIDR"
-}
-
-variable "default_egress" {
-  type        = list(string)
-  default     = ["0.0.0.0/0"]
-  description = "Default egress CIDR"
+  description = "IPv4 CIDR block for the VPC to use."
 }
