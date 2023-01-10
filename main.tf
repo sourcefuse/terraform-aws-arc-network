@@ -1,15 +1,22 @@
+################################################################################
+## defaults
+################################################################################
 terraform {
-  required_version = ">= 1.0.8"
+  required_version = "~> 1.3"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 3.0"
+      version = ">= 4.0"
     }
   }
 }
 
+################################################################################
+## network
+################################################################################
 module "vpc" {
-  source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=0.27.0"
+  source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=2.0.0"
   namespace  = var.namespace
   name       = "vpc"
   stage      = var.environment
@@ -20,13 +27,8 @@ module "vpc" {
   }))
 }
 
-locals {
-  public_cidr_block  = cidrsubnet(module.vpc.vpc_cidr_block, 1, 0)
-  private_cidr_block = cidrsubnet(module.vpc.vpc_cidr_block, 1, 1)
-}
-
 module "public_subnets" {
-  source              = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.14.1"
+  source              = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
   namespace           = var.namespace
   stage               = var.environment
   name                = "publicsubnet"
@@ -36,12 +38,14 @@ module "public_subnets" {
   type                = "public"
   igw_id              = module.vpc.igw_id
   nat_gateway_enabled = "true"
-  tags = merge(var.tags, {
-    "Name" = "${var.namespace}-${var.environment}-public-subnet"
-  })
+
+  tags = merge(var.tags, tomap({
+    Name = "${var.namespace}-${var.environment}-public-subnet"
+  }))
 }
+
 module "private_subnets" {
-  source             = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.14.1"
+  source             = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
   namespace          = var.namespace
   stage              = var.environment
   name               = "privatesubnet"
@@ -49,13 +53,16 @@ module "private_subnets" {
   vpc_id             = module.vpc.vpc_id
   cidr_block         = local.private_cidr_block
   type               = "private"
+  az_ngw_ids         = module.public_subnets.az_ngw_ids
+
   tags = merge(var.tags, tomap({
-    "Name" = "${var.namespace}-${var.environment}-db-private-subnet"
+    Name = "${var.namespace}-${var.environment}-db-private-subnet"
   }))
-  az_ngw_ids = module.public_subnets.az_ngw_ids
 }
 
+################################################################################
 ## security
+################################################################################
 resource "aws_security_group" "standard_web_sg" {
   name        = "${var.namespace}-${var.environment}-alb-standard-web-sg"
   vpc_id      = module.vpc.vpc_id

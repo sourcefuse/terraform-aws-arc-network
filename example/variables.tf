@@ -1,12 +1,10 @@
+################################################################
+## shared
+################################################################
 variable "environment" {
   type        = string
   description = "Name of the environment, i.e. dev, stage, prod"
   default     = "dev"
-}
-
-variable "profile" {
-  type        = string
-  description = "AWS Config profile"
 }
 
 variable "region" {
