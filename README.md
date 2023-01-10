@@ -2,14 +2,14 @@
 
 ## Overview
 
-AWS Terraform module for the SourceFuse reference architecture network.
+AWS Terraform module for the SourceFuse Reference Architecture Network.  
+
+This module creates a VPC with a Public and Private subnet.    
 
 ## Usage
 
 This module is deployed with the following namespaces
 * `dev`
-
-SSH keys for the bastion host are stored in the S3 Terraform state bucket for the environment.
 
 Initilize Terraform
 ```shell
@@ -75,7 +75,6 @@ No resources.
 ## Development
 
 ### Prerequisites
-
 - [terraform](https://learn.hashicorp.com/terraform/getting-started/install#installing-terraform)
 - [terraform-docs](https://github.com/segmentio/terraform-docs)
 - [pre-commit](https://pre-commit.com/#install)
@@ -83,29 +82,23 @@ No resources.
 - [golint](https://github.com/golang/lint#installation)
 
 ### Configurations
-
 - Configure pre-commit hooks
-```sh
-pre-commit install
-```
-
+  ```sh
+  pre-commit install
+  ```
 - Configure golang deps for tests
-```sh
-> go get github.com/gruntwork-io/terratest/modules/terraform
-> go get github.com/stretchr/testify/assert
-```
+  ```sh
+  go get github.com/gruntwork-io/terratest/modules/terraform
+  go get github.com/stretchr/testify/assert
+  ```
 
 ### Tests
-
 - Tests are available in `test` directory
-
-- In the test directory, run the below command
-```sh
-go test
-```
+- In the test directory, run the below command 
+  ```sh
+  go test -timeout 1800s
+  ```
 
 ## Authors
-
-This project is authored by below people
-
+This project is authored by:
 - SourceFuse
