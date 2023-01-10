@@ -23,21 +23,21 @@ module "vpc" {
   stage     = var.environment
 
   ## networking / dns
-  default_network_acl_deny_all  = false # TODO - make into variable
-  default_route_table_no_routes = false # TODO - make into variable
-  internet_gateway_enabled      = true  # TODO - make into variable
-  dns_hostnames_enabled         = true  # TODO - make into variable
-  dns_support_enabled           = true  # TODO - make into variable
+  default_network_acl_deny_all  = var.default_network_acl_deny_all
+  default_route_table_no_routes = var.default_route_table_no_routes
+  internet_gateway_enabled      = var.internet_gateway_enabled
+  dns_hostnames_enabled         = var.dns_hostnames_enabled
+  dns_support_enabled           = var.dns_support_enabled
 
   ## security
-  default_security_group_deny_all = true # TODO - make into variable
+  default_security_group_deny_all = var.default_security_group_deny_all
 
   ## ipv4 support
   ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
 
   ## ipv6 support
-  assign_generated_ipv6_cidr_block          = true  # TODO - make into variable
-  ipv6_egress_only_internet_gateway_enabled = false # TODO - make into variable
+  assign_generated_ipv6_cidr_block          = var.assign_generated_ipv6_cidr_block
+  ipv6_egress_only_internet_gateway_enabled = var.ipv6_egress_only_internet_gateway_enabled
 
   tags = merge(var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-vpc",
