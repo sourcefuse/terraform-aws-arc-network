@@ -45,6 +45,19 @@ module "vpc" {
 }
 
 ################################################################################
+## vpc endpoint
+################################################################################
+module "vpc_endpoints" {
+  source = "git::https://github.com/cloudposse/terraform-aws-vpc.git//modules/vpc-endpoints?ref=2.0.0"
+  count  = var.vpc_endpoints_enabled == true ? 1 : 0
+
+  vpc_id = module.vpc.vpc_id
+
+  gateway_vpc_endpoints   = var.gateway_vpc_endpoints
+  interface_vpc_endpoints = var.interface_vpc_endpoints
+}
+
+################################################################################
 ## subnets
 ################################################################################
 module "public_subnets" {

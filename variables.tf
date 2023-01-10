@@ -86,3 +86,51 @@ variable "ipv6_egress_only_internet_gateway_enabled" {
   description = "Set `true` to create an IPv6 Egress-Only Internet Gateway for the VPC"
   default     = false
 }
+
+################################################################################
+## vpc endpoint
+################################################################################
+variable "vpc_endpoints_enabled" {
+  type        = bool
+  description = "Enable VPC endpoints."
+  default     = false
+}
+
+variable "gateway_vpc_endpoints" {
+  type = map(object({
+    name            = string
+    policy          = string
+    route_table_ids = list(string)
+  }))
+  description = <<-EOT
+    A map of Gateway VPC Endpoints to provision into the VPC. This is a map of objects with the following attributes:
+    - `name`: Short service name (either "s3" or "dynamodb")
+    - `policy` = A policy (as JSON string) to attach to the endpoint that controls access to the service. May be `null` for full access.
+    - `route_table_ids`: List of route tables to associate the gateway with. Routes to the gateway
+      will be automatically added to these route tables.
+    EOT
+  default     = {}
+}
+
+variable "interface_vpc_endpoints" {
+  type = map(object({
+    name                = string
+    policy              = string
+    private_dns_enabled = bool
+    security_group_ids  = list(string)
+    subnet_ids          = list(string)
+  }))
+  description = <<-EOT
+    A map of Interface VPC Endpoints to provision into the VPC.
+    This is a map of objects with the following attributes:
+    - `name`: Simple name of the service, like "ec2" or "redshift"
+    - `policy`: A policy (as JSON string) to attach to the endpoint that controls access to the service. May be `null` for full access.
+    - `private_dns_enabled`: Set `true` to associate a private hosted zone with the specified VPC
+    - `security_group_ids`: The ID of one or more security groups to associate with the network interface. The first
+      security group will replace the default association with the VPC's default security group. If you want
+      to maintain the association with the default security group, either leave `security_group_ids` empty or
+      include the default security group ID in the list.
+    - `subnet_ids`: List of subnet in which to install the endpoints.
+   EOT
+  default     = {}
+}
