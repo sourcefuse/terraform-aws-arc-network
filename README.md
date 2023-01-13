@@ -36,7 +36,9 @@ terraform apply -var-file=dev.tfvars
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.49.0 |
 
 ## Modules
 
@@ -49,7 +51,9 @@ No providers.
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [aws_dx_connection.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dx_connection) | resource |
 
 ## Inputs
 
@@ -60,6 +64,13 @@ No resources.
 | <a name="input_default_network_acl_deny_all"></a> [default\_network\_acl\_deny\_all](#input\_default\_network\_acl\_deny\_all) | When `true`, manage the default network acl and remove all rules, disabling all ingress and egress.<br>When `false`, do not mange the default networking acl, allowing it to be managed by another component. | `bool` | `false` | no |
 | <a name="input_default_route_table_no_routes"></a> [default\_route\_table\_no\_routes](#input\_default\_route\_table\_no\_routes) | When `true`, manage the default route table and remove all routes, disabling all ingress and egress.<br>When `false`, do not mange the default route table, allowing it to be managed by another component.<br>Conflicts with Terraform resource `aws_main_route_table_association`. | `bool` | `false` | no |
 | <a name="input_default_security_group_deny_all"></a> [default\_security\_group\_deny\_all](#input\_default\_security\_group\_deny\_all) | When `true`, manage the default security group and remove all rules, disabling all ingress and egress.<br>When `false`, do not manage the default security group, allowing it to be managed by another component. | `bool` | `true` | no |
+| <a name="input_direct_connect_bandwidth"></a> [direct\_connect\_bandwidth](#input\_direct\_connect\_bandwidth) | The bandwidth of the connection.<br>Valid values for dedicated connections: 1Gbps, 10Gbps.<br>Valid values for hosted connections: 50Mbps, 100Mbps, 200Mbps, 300Mbps, 400Mbps, 500Mbps, 1Gbps, 2Gbps, 5Gbps, 10Gbps and 100Gbps.<br>Case sensitive. | `string` | `"10Gbps"` | no |
+| <a name="input_direct_connect_enabled"></a> [direct\_connect\_enabled](#input\_direct\_connect\_enabled) | Enable direct connect. | `bool` | `false` | no |
+| <a name="input_direct_connect_encryption_mode"></a> [direct\_connect\_encryption\_mode](#input\_direct\_connect\_encryption\_mode) | The connection MAC Security (MACsec) encryption mode. MAC Security (MACsec) is only available on dedicated connections. Valid values are no\_encrypt, should\_encrypt, and must\_encrypt. | `string` | `"must_encrypt"` | no |
+| <a name="input_direct_connect_location"></a> [direct\_connect\_location](#input\_direct\_connect\_location) | The location of AWS Direct Connect. Use `aws directconnect describe-locations` for the list of AWS Direct Connect locations. Use locationCode for the value. | `string` | `null` | no |
+| <a name="input_direct_connect_provider"></a> [direct\_connect\_provider](#input\_direct\_connect\_provider) | The name of the service provider associated with the connection. | `string` | `null` | no |
+| <a name="input_direct_connect_request_macsec"></a> [direct\_connect\_request\_macsec](#input\_direct\_connect\_request\_macsec) | Boolean value indicating whether you want the connection to support MAC Security (MACsec).<br>MAC Security (MACsec) is only available on dedicated connections.<br>Changing this value will cause the resource to be destroyed and re-created.<br>See [MACsec prerequisites](https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html) for more information. | `bool` | `false` | no |
+| <a name="input_direct_connect_skip_destroy"></a> [direct\_connect\_skip\_destroy](#input\_direct\_connect\_skip\_destroy) | et to true if you do not wish the connection to be deleted at destroy time, and instead just removed from the Terraform state. | `bool` | `false` | no |
 | <a name="input_dns_hostnames_enabled"></a> [dns\_hostnames\_enabled](#input\_dns\_hostnames\_enabled) | Set `true` to enable [DNS hostnames](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html#vpc-dns-hostnames) in the VPC | `bool` | `true` | no |
 | <a name="input_dns_support_enabled"></a> [dns\_support\_enabled](#input\_dns\_support\_enabled) | Set `true` to enable DNS resolution in the VPC through the Amazon provided DNS server | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Name of the environment, i.e. dev, stage, prod | `string` | n/a | yes |

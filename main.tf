@@ -59,6 +59,25 @@ module "vpc_endpoints" {
 }
 
 ################################################################################
+## direct connect
+################################################################################
+resource "aws_dx_connection" "this" {
+  count = var.direct_connect_enabled == true ? 1 : 0
+
+  name            = "${var.namespace}-${var.environment}-dx-connection"
+  bandwidth       = var.direct_connect_bandwidth
+  provider_name   = var.direct_connect_provider
+  location        = var.direct_connect_location
+  request_macsec  = var.direct_connect_request_macsec
+  encryption_mode = var.direct_connect_encryption_mode
+  skip_destroy    = var.direct_connect_skip_destroy
+
+  tags = merge(var.tags, tomap({
+    Name = "${var.namespace}-${var.environment}-dx-connection"
+  }))
+}
+
+################################################################################
 ## subnets
 ################################################################################
 module "public_subnets" {
