@@ -134,3 +134,58 @@ variable "interface_vpc_endpoints" {
    EOT
   default     = {}
 }
+
+################################################################################
+## direct connect
+################################################################################
+variable "direct_connect_enabled" {
+  description = "Enable direct connect."
+  type        = bool
+  default     = false
+}
+
+variable "direct_connect_bandwidth" {
+  description = <<-EOT
+    The bandwidth of the connection.
+    Valid values for dedicated connections: 1Gbps, 10Gbps.
+    Valid values for hosted connections: 50Mbps, 100Mbps, 200Mbps, 300Mbps, 400Mbps, 500Mbps, 1Gbps, 2Gbps, 5Gbps, 10Gbps and 100Gbps.
+    Case sensitive.
+  EOT
+  type        = string
+  default     = "10Gbps"
+}
+
+variable "direct_connect_provider" {
+  description = "The name of the service provider associated with the connection."
+  type        = string
+  default     = null
+}
+
+variable "direct_connect_location" {
+  description = "The location of AWS Direct Connect. Use `aws directconnect describe-locations` for the list of AWS Direct Connect locations. Use locationCode for the value."
+  type        = string
+  default     = null
+}
+
+variable "direct_connect_request_macsec" {
+  description = <<-EOT
+    Boolean value indicating whether you want the connection to support MAC Security (MACsec).
+    MAC Security (MACsec) is only available on dedicated connections.
+    Changing this value will cause the resource to be destroyed and re-created.
+    See [MACsec prerequisites](https://docs.aws.amazon.com/directconnect/latest/UserGuide/direct-connect-mac-sec-getting-started.html) for more information.
+  EOT
+  type        = bool
+  default     = false
+}
+
+variable "direct_connect_encryption_mode" {
+  description = "The connection MAC Security (MACsec) encryption mode. MAC Security (MACsec) is only available on dedicated connections. Valid values are no_encrypt, should_encrypt, and must_encrypt."
+  type        = string
+  default     = "must_encrypt"
+}
+
+variable "direct_connect_skip_destroy" {
+  description = "et to true if you do not wish the connection to be deleted at destroy time, and instead just removed from the Terraform state."
+  type        = bool
+  default     = false
+}
