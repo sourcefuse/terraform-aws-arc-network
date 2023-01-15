@@ -52,7 +52,7 @@ resource "aws_vpn_gateway" "this" {
 
   vpc_id = module.vpc.vpc_id
 
-  tags   = merge(var.tags, tomap({
+  tags = merge(var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-vpn-gw"
   }))
 }
