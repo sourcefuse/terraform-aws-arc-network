@@ -51,7 +51,10 @@ resource "aws_vpn_gateway" "this" {
   count = var.vpn_gateway_enabled == true ? 1 : 0
 
   vpc_id = module.vpc.vpc_id
-  tags   = var.tags
+
+  tags = merge(var.tags, tomap({
+    Name = "${var.namespace}-${var.environment}-vpn-gw"
+  }))
 }
 
 ################################################################################
