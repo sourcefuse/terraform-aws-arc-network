@@ -2,11 +2,11 @@
 
 ## Overview
 
-AWS Terraform module for the SourceFuse Reference Architecture.
+AWS Terraform module for the SourceFuse Reference Architecture. We consider this module to be a high order module that is composed of smaller modules underneath. In most cases, we use open source modules to create our high order modules. Please see the reference documentation below for more information about the modules used under the hood.
 
 ![arc_network_hla](./static/arc_network_hla.png)
 
-Create the following resources in a single region.
+Creates the following resources in a single region.
 
 * VPC
 * Multi-AZ private and public subnets
