@@ -2,31 +2,111 @@
 
 ## Overview
 
-AWS Terraform module for the SourceFuse Reference Architecture Network.  
+AWS Terraform module for the SourceFuse Reference Architecture.
 
-This module creates a VPC with a Public and Private subnet.    
+![arc_network_hla](./static/arc_network_hla.png)
+
+Create the following resources in a single region.
+
+* VPC
+* Multi-AZ private and public subnets
+* Route tables, internet gateway, and NAT gateways
+* Configurable VPN Gateway
+* Configurable VPC Endpoints
 
 ## Usage
 
-This module is deployed with the following namespaces
-* `dev`
+See the `example` folder for a complete example.
 
-Initilize Terraform
 ```shell
-terraform init
+################################################################
+## shared
+################################################################
+variable "environment" {
+  type        = string
+  description = "Name of the environment, i.e. dev, stage, prod"
+  default     = "dev"
+}
+
+variable "region" {
+  type        = string
+  description = "AWS Region"
+  default     = "us-east-1"
+}
+
+variable "namespace" {
+  type        = string
+  description = "Namespace of the project, i.e. refarch"
+  default     = "example"
+}
+
+################################################################
+## network
+################################################################
+variable "availability_zones" {
+  type        = list(string)
+  description = "List of availability zones to deploy resources in."
+  default = [
+    "us-east-1a",
+    "us-east-1b"
+  ]
+}
+
+variable "vpc_ipv4_primary_cidr_block" {
+  type        = string
+  description = "IPv4 CIDR block for the VPC to use."
+  default     = "10.9.0.0/16"
+}
+
+
+
+################################################################
+## defaults
+################################################################
+terraform {
+  required_version = "~> 1.3"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.9"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.region
+}
+
+module "tags" {
+  source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.1.0"
+
+  environment = var.environment
+  project     = "terraform-aws-ref-arch-network"
+
+  extra_tags = {
+    Example = "True"
+  }
+}
+
+################################################################
+## network
+################################################################
+module "network" {
+  source = "../."
+
+  namespace                   = var.namespace
+  environment                 = var.environment
+  availability_zones          = var.availability_zones
+  vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
+
+  tags = module.tags.tags
+}
+
 ```
 
-Create a `dev` workspace
-```shell
-terraform workspace new dev
-```
-
-Apply Terraform
-```shell
-terraform apply -var-file=dev.tfvars
-```
- 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
 ## Requirements
 
 | Name | Version |
