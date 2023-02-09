@@ -9,12 +9,20 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.9"
     }
+
+    awsutils = {
+      source  = "cloudposse/awsutils"
+      version = "~> 0.15"
+    }
   }
 }
 
 provider "aws" {
-  region  = var.region
-  profile = var.profile
+  region = var.region
+}
+
+provider "awsutils" {
+  region = var.region
 }
 
 module "tags" {
@@ -34,11 +42,14 @@ module "tags" {
 module "network" {
   source = "../."
 
-  namespace                   = var.namespace
-  environment                 = var.environment
-  availability_zones          = var.availability_zones
-  vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
-  client_vpn_enabled          = true
-  client_vpn_split_tunnel     = false
+  namespace   = var.namespace
+  environment = var.environment
+
+  availability_zones              = var.availability_zones
+  vpc_ipv4_primary_cidr_block     = var.vpc_ipv4_primary_cidr_block
+  client_vpn_enabled              = true
+  client_vpn_split_tunnel         = true
+  vpn_self_service_portal_enabled = true
+
   tags = module.tags.tags
 }
