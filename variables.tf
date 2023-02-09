@@ -96,6 +96,41 @@ variable "vpn_gateway_enabled" {
   default     = false
 }
 
+variable "client_vpn_enabled" {
+  type        = bool
+  description = "Enable client VPN endpoint"
+  default     = false
+}
+
+variable "client_vpn_organization_name" {
+  type        = string
+  description = "Organization name for self signed certificates"
+  default     = ""
+}
+
+variable "client_vpn_client_cidr_block" {
+  type        = string
+  description = "CIDR block to be assigned tpo VPN clients"
+  default     = "10.1.0.0/16"
+}
+
+variable "client_vpn_logging_enabled" {
+  type        = bool
+  description = "Enable/disable CloudWatch logs for client VPN"
+  default     = true 
+}
+
+variable "client_vpn_retention_in_days" {
+  type        = number
+  description = "Number of days to retain the client VPN logs on CloudWatch"
+  default     = 30
+}
+
+variable "client_vpn_split_tunnel" {
+  type        = bool
+  description = "Enable/disable split tunnel"
+  default     = true 
+}
 ################################################################################
 ## vpc endpoint
 ################################################################################

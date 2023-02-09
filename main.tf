@@ -47,6 +47,8 @@ module "vpc" {
 ################################################################################
 ## vpn
 ################################################################################
+
+## site to site VPN (meant for connect with other networks via BGP)
 resource "aws_vpn_gateway" "this" {
   count = var.vpn_gateway_enabled == true ? 1 : 0
 
@@ -56,6 +58,34 @@ resource "aws_vpn_gateway" "this" {
     Name = "${var.namespace}-${var.environment}-vpn-gw"
   }))
 }
+
+## client VPN 
+## meant to provide connectivity to AWS VPCs to authorised users from 
+## their end systems / workstations)
+
+module "client_vpn" {
+  source  = "cloudposse/ec2-client-vpn/aws"
+  version = "0.14.0"
+  
+  count      = var.client_vpn_enabled == true ? 1 : 0
+  depends_on = [ module.vpc, module.public_subnets, module.private_subnets ]
+
+  name      = "client-vpn"
+  namespace = var.namespace
+  stage     = var.environment
+  
+  vpc_id                  = module.vpc.vpc_id
+  client_cidr             = var.client_vpn_client_cidr_block
+  organization_name       = local.organization_name
+  logging_enabled         = var.client_vpn_logging_enabled
+  logging_stream_name     = "${var.environment}-${var.namespace}-client-vpn-logs"
+  retention_in_days       = var.client_vpn_retention_in_days
+  associated_subnets      = local.vpn_subnets
+  split_tunnel            = var.client_vpn_split_tunnel
+  
+  tags                    = var.tags
+}
+
 
 ################################################################################
 ## vpc endpoint

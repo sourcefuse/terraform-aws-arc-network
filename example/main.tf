@@ -13,7 +13,8 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  region  = var.region
+  profile = var.profile
 }
 
 module "tags" {
@@ -37,6 +38,7 @@ module "network" {
   environment                 = var.environment
   availability_zones          = var.availability_zones
   vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
-
+  client_vpn_enabled          = true
+  client_vpn_split_tunnel     = false
   tags = module.tags.tags
 }

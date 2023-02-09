@@ -37,3 +37,24 @@ output "main_route_table_id" {
   description = "The Main Route Table ID for the VPC"
   value       = module.vpc.vpc_main_route_table_id
 }
+
+output "vpn_endpoint_arn" {
+  value       = var.client_vpn_enabled ? local.vpn_endpoint_arn : null
+  description = "The ARN of the Client VPN Endpoint Connection."
+}
+
+output "vpn_subnets" {
+  value       = local.vpn_subnets
+  description = "subnets associated with the VPN"
+}
+
+output "vpn_endpoint_dns_name" {
+  value       = var.client_vpn_enabled ? local.vpn_endpoint_dns_name : null
+  description = "The DNS Name of the Client VPN Endpoint Connection."
+}
+
+output "full_client_configuration" {
+  description = "Client configuration including client certificate and private key"
+  value       = var.client_vpn_enabled == true ? local.full_client_configuration : null
+  sensitive   = true
+}
