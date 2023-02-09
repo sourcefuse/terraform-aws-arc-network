@@ -39,7 +39,7 @@ output "main_route_table_id" {
 }
 
 output "vpn_endpoint_arn" {
-  value       = var.client_vpn_enabled ? local.vpn_endpoint_arn : null
+  value       = local.vpn_endpoint_arn
   description = "The ARN of the Client VPN Endpoint Connection."
 }
 
@@ -49,12 +49,6 @@ output "vpn_subnets" {
 }
 
 output "vpn_endpoint_dns_name" {
-  value       = var.client_vpn_enabled ? local.vpn_endpoint_dns_name : null
+  value       = local.vpn_endpoint_dns_name
   description = "The DNS Name of the Client VPN Endpoint Connection."
-}
-
-output "full_client_configuration" {
-  description = "Client configuration including client certificate and private key"
-  value       = var.client_vpn_enabled == true ? local.full_client_configuration : null
-  sensitive   = true
 }
