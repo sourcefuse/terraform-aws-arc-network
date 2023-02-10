@@ -117,7 +117,7 @@ variable "client_vpn_client_cidr_block" {
 variable "client_vpn_logging_enabled" {
   type        = bool
   description = "Enable/disable CloudWatch logs for client VPN"
-  default     = true 
+  default     = true
 }
 
 variable "client_vpn_retention_in_days" {
@@ -129,7 +129,7 @@ variable "client_vpn_retention_in_days" {
 variable "client_vpn_split_tunnel" {
   type        = bool
   description = "Enable/disable split tunnel"
-  default     = true 
+  default     = true
 }
 ################################################################################
 ## vpc endpoint

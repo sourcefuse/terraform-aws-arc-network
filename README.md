@@ -30,24 +30,25 @@ Please reference the [AWS Documentation](https://docs.aws.amazon.com/vpn/latest/
 once the VPN has been configured in AWS. 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.3 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.0.0, >= 4.0.0, >= 4.9.0 |
+| <a name="requirement_awsutils"></a> [awsutils](#requirement\_awsutils) | ~> 0.15 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.49.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.54.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_client_vpn"></a> [client\_vpn](#module\_client\_vpn) | cloudposse/ec2-client-vpn/aws | 0.14.0 |
 | <a name="module_private_subnets"></a> [private\_subnets](#module\_private\_subnets) | git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git | 0.15.0 |
 | <a name="module_public_subnets"></a> [public\_subnets](#module\_public\_subnets) | git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git | 0.15.0 |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | git::https://github.com/cloudposse/terraform-aws-vpc.git | 2.0.0 |
@@ -66,6 +67,12 @@ once the VPN has been configured in AWS.
 |------|-------------|------|---------|:--------:|
 | <a name="input_assign_generated_ipv6_cidr_block"></a> [assign\_generated\_ipv6\_cidr\_block](#input\_assign\_generated\_ipv6\_cidr\_block) | When `true`, assign AWS generated IPv6 CIDR block to the VPC.  Conflicts with `ipv6_ipam_pool_id`. | `bool` | `true` | no |
 | <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | List of availability zones to deploy resources in. | `list(string)` | n/a | yes |
+| <a name="input_client_vpn_client_cidr_block"></a> [client\_vpn\_client\_cidr\_block](#input\_client\_vpn\_client\_cidr\_block) | CIDR block to be assigned tpo VPN clients | `string` | `"10.1.0.0/16"` | no |
+| <a name="input_client_vpn_enabled"></a> [client\_vpn\_enabled](#input\_client\_vpn\_enabled) | Enable client VPN endpoint | `bool` | `false` | no |
+| <a name="input_client_vpn_logging_enabled"></a> [client\_vpn\_logging\_enabled](#input\_client\_vpn\_logging\_enabled) | Enable/disable CloudWatch logs for client VPN | `bool` | `true` | no |
+| <a name="input_client_vpn_organization_name"></a> [client\_vpn\_organization\_name](#input\_client\_vpn\_organization\_name) | Organization name for self signed certificates | `string` | `""` | no |
+| <a name="input_client_vpn_retention_in_days"></a> [client\_vpn\_retention\_in\_days](#input\_client\_vpn\_retention\_in\_days) | Number of days to retain the client VPN logs on CloudWatch | `number` | `30` | no |
+| <a name="input_client_vpn_split_tunnel"></a> [client\_vpn\_split\_tunnel](#input\_client\_vpn\_split\_tunnel) | Enable/disable split tunnel | `bool` | `true` | no |
 | <a name="input_default_network_acl_deny_all"></a> [default\_network\_acl\_deny\_all](#input\_default\_network\_acl\_deny\_all) | When `true`, manage the default network acl and remove all rules, disabling all ingress and egress.<br>When `false`, do not mange the default networking acl, allowing it to be managed by another component. | `bool` | `false` | no |
 | <a name="input_default_route_table_no_routes"></a> [default\_route\_table\_no\_routes](#input\_default\_route\_table\_no\_routes) | When `true`, manage the default route table and remove all routes, disabling all ingress and egress.<br>When `false`, do not mange the default route table, allowing it to be managed by another component.<br>Conflicts with Terraform resource `aws_main_route_table_association`. | `bool` | `false` | no |
 | <a name="input_default_security_group_deny_all"></a> [default\_security\_group\_deny\_all](#input\_default\_security\_group\_deny\_all) | When `true`, manage the default security group and remove all rules, disabling all ingress and egress.<br>When `false`, do not manage the default security group, allowing it to be managed by another component. | `bool` | `true` | no |
@@ -94,6 +101,7 @@ once the VPN has been configured in AWS.
 | Name | Description |
 |------|-------------|
 | <a name="output_default_route_table_id"></a> [default\_route\_table\_id](#output\_default\_route\_table\_id) | The Default Route Table ID for the VPC |
+| <a name="output_full_client_configuration"></a> [full\_client\_configuration](#output\_full\_client\_configuration) | Client configuration including client certificate and private key |
 | <a name="output_main_route_table_id"></a> [main\_route\_table\_id](#output\_main\_route\_table\_id) | The Main Route Table ID for the VPC |
 | <a name="output_private_subnet_cidrs"></a> [private\_subnet\_cidrs](#output\_private\_subnet\_cidrs) | Private subnet CIDRs |
 | <a name="output_private_subnet_ids"></a> [private\_subnet\_ids](#output\_private\_subnet\_ids) | Private subnet IDs |
@@ -101,6 +109,9 @@ once the VPN has been configured in AWS.
 | <a name="output_public_subnet_ids"></a> [public\_subnet\_ids](#output\_public\_subnet\_ids) | Public subnet IDs |
 | <a name="output_vpc_cidr"></a> [vpc\_cidr](#output\_vpc\_cidr) | The VPC CIDR block |
 | <a name="output_vpc_id"></a> [vpc\_id](#output\_vpc\_id) | The VPC ID |
+| <a name="output_vpn_endpoint_arn"></a> [vpn\_endpoint\_arn](#output\_vpn\_endpoint\_arn) | The ARN of the Client VPN Endpoint Connection. |
+| <a name="output_vpn_endpoint_dns_name"></a> [vpn\_endpoint\_dns\_name](#output\_vpn\_endpoint\_dns\_name) | The DNS Name of the Client VPN Endpoint Connection. |
+| <a name="output_vpn_subnets"></a> [vpn\_subnets](#output\_vpn\_subnets) | subnets associated with the VPN |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Development

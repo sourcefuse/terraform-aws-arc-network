@@ -42,4 +42,3 @@ variable "vpc_ipv4_primary_cidr_block" {
   description = "IPv4 CIDR block for the VPC to use."
   default     = "10.9.0.0/16"
 }
-
