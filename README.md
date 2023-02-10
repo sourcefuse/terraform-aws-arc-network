@@ -15,95 +15,19 @@ Create the following resources in a single region.
 * Configurable VPC Endpoints
 
 ## Usage
-
 See the `example` folder for a complete example.
 
 ```shell
-################################################################
-## shared
-################################################################
-variable "environment" {
-  type        = string
-  description = "Name of the environment, i.e. dev, stage, prod"
-  default     = "dev"
-}
 
-variable "region" {
-  type        = string
-  description = "AWS Region"
-  default     = "us-east-1"
-}
-
-variable "namespace" {
-  type        = string
-  description = "Namespace of the project, i.e. refarch"
-  default     = "example"
-}
-
-################################################################
-## network
-################################################################
-variable "availability_zones" {
-  type        = list(string)
-  description = "List of availability zones to deploy resources in."
-  default = [
-    "us-east-1a",
-    "us-east-1b"
-  ]
-}
-
-variable "vpc_ipv4_primary_cidr_block" {
-  type        = string
-  description = "IPv4 CIDR block for the VPC to use."
-  default     = "10.9.0.0/16"
-}
-
-
-
-################################################################
-## defaults
-################################################################
-terraform {
-  required_version = "~> 1.3"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.9"
-    }
-  }
-}
-
-provider "aws" {
-  region = var.region
-}
-
-module "tags" {
-  source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.1.0"
-
-  environment = var.environment
-  project     = "terraform-aws-ref-arch-network"
-
-  extra_tags = {
-    Example = "True"
-  }
-}
-
-################################################################
-## network
-################################################################
 module "network" {
-  source = "../."
-
-  namespace                   = var.namespace
-  environment                 = var.environment
-  availability_zones          = var.availability_zones
-  vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
-
-  tags = module.tags.tags
+  source = "git::https://github.com/sourcefuse/terraform-aws-ref-arch-network"
 }
 
 ```
+
+## Configuring your VPN Client
+Please reference the [AWS Documentation](https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/cvpn-working-endpoint-export.html) on how to configure the client 
+once the VPN has been configured in AWS. 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
