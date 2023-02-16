@@ -79,14 +79,19 @@ module "client_vpn" {
   namespace = var.namespace
   stage     = var.environment
 
-  vpc_id              = module.vpc.vpc_id
-  client_cidr         = var.client_vpn_client_cidr_block
-  organization_name   = local.organization_name
-  logging_enabled     = var.client_vpn_logging_enabled
-  logging_stream_name = "${var.environment}-${var.namespace}-client-vpn-logs"
-  retention_in_days   = var.client_vpn_retention_in_days
-  associated_subnets  = local.vpn_subnets
-  split_tunnel        = var.client_vpn_split_tunnel
+  vpc_id                          = module.vpc.vpc_id
+  client_cidr                     = var.client_vpn_client_cidr_block
+  organization_name               = local.organization_name
+  logging_enabled                 = var.client_vpn_logging_enabled
+  logging_stream_name             = "${var.environment}-${var.namespace}-client-vpn-logs"
+  retention_in_days               = var.client_vpn_retention_in_days
+  associated_subnets              = local.vpn_subnets
+  split_tunnel                    = var.client_vpn_split_tunnel
+  authorization_rules             = var.client_vpn_authorization_rules
+
+  create_security_group           = var.client_vpn_create_security_group
+  allowed_security_group_ids      = var.client_vpn_allowed_security_group_ids
+  associated_security_group_ids   = var.client_vpn_associated_security_group_ids
 
   tags = var.tags
 }

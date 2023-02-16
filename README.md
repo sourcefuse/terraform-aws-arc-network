@@ -12,6 +12,7 @@ Create the following resources in a single region.
 * Multi-AZ private and public subnets
 * Route tables, internet gateway, and NAT gateways
 * Configurable VPN Gateway
+* Configurable Client VPN Endpoint
 * Configurable VPC Endpoints
 
 ## Usage
@@ -26,8 +27,22 @@ module "network" {
 ```
 
 ## Configuring your VPN Client
-Please reference the [AWS Documentation](https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/cvpn-working-endpoint-export.html) on how to configure the client 
-once the VPN has been configured in AWS. 
+
+Please reference the [AWS Documentation](https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/cvpn-working-endpoint-export.html) on how to configure the client
+once the VPN has been configured in AWS.
+
+The pki keys and certificates can be obtained from the respective SSM parameters and can be used
+to generate client certificate for mutual authentication using easy-rsa.
+
+You shall need to copy the ca cert and ca key to:
+
+/path/etc/pki/ca.crt
+
+and
+
+/path/etc/pki/private/ca.key
+
+respectively to use the ca certificate and key generated in this module for mutual auth.
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

@@ -131,6 +131,34 @@ variable "client_vpn_split_tunnel" {
   description = "Enable/disable split tunnel"
   default     = true
 }
+
+variable "client_vpn_create_security_group" {
+  type        = bool
+  default     = true
+  description = "Set `true` to create and configure a new security group. If false, `associated_security_group_ids` must be provided."
+}
+
+variable "client_vpn_associated_security_group_ids" {
+  type        = list(string)
+  default     = []
+  description = <<-EOT
+    A list of IDs of Security Groups to associate the VPN endpoints with, in addition to the created security group.
+    These security groups will not be modified and, if `create_security_group` is `false`, must have rules providing the desired access.
+    EOT
+}
+
+variable "client_vpn_allowed_security_group_ids" {
+  type        = list(string)
+  default     = []
+  description = <<-EOT
+    A list of IDs of Security Groups to allow access to the security group created by this module.
+    The length of this list must be known at "plan" time.
+    EOT
+}
+variable "client_vpn_authorization_rules" {
+  type        = list(map(any))
+  description = "List of objects describing the authorization rules for the client vpn"
+}
 ################################################################################
 ## vpc endpoint
 ################################################################################
