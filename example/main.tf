@@ -13,7 +13,8 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  region  = var.region
+  profile = var.profile
 }
 
 module "tags" {
@@ -33,10 +34,18 @@ module "tags" {
 module "network" {
   source = "../."
 
-  namespace                   = var.namespace
-  environment                 = var.environment
-  availability_zones          = var.availability_zones
-  vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
+  namespace                     = var.namespace
+  environment                   = var.environment
+  availability_zones            = var.availability_zones
+  vpc_ipv4_primary_cidr_block   = var.vpc_ipv4_primary_cidr_block
+  client_vpn_enabled            = true
+  tags                          = module.tags.tags
+  client_vpn_authorization_rules = [
+    {
+      target_network_cidr  = var.vpc_ipv4_primary_cidr_block
+      authorize_all_groups = true
+      description          = "default authorization group to allow all authenticated clients to access the vpc"
+    }
+  ]
 
-  tags = module.tags.tags
 }
