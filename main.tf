@@ -119,6 +119,25 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
   vpc_endpoint_type   = "Gateway"
   route_table_ids     = module.vpc.vpc_default_route_table_id
   private_dns_enabled = var.private_dns_enabled
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "AllowS3Access"
+        Effect    = "Allow"
+        Principal = "*"
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject"
+        ]
+        Resource = [
+          "arn:aws:s3:::*",
+          "arn:aws:s3:::*/*"
+        ]
+      }
+    ]
+  })
 
   tags = merge(var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-s3-endpoint"
@@ -139,12 +158,32 @@ resource "aws_vpc_endpoint" "dynamodb_endpoint" {
   # Specify the route table IDs to associate with the endpoint
   route_table_ids = module.vpc.vpc_default_route_table_id
 
+  policy = data.aws_iam_policy_document.dynamodb.json
+
   # Specify whether or not to enable private DNS
   private_dns_enabled = var.private_dns_enabled
 
   tags = merge(var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-dynamodb-endpoint"
   }))
+}
+
+data "aws_iam_policy_document" "dynamodb" {
+  statement {
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:Scan",
+      "dynamodb:Query",
+      "dynamodb:UpdateItem",
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    resources = ["arn:aws:dynamodb:${var.aws_region}:table/*"]
+  }
 }
 
 # Create a default VPC endpoint for EC2
@@ -157,10 +196,47 @@ resource "aws_vpc_endpoint" "ec2_endpoint" {
 
   vpc_endpoint_type   = var.vpc_endpoint_type // Gateway type endpoints are available only for AWS services including S3 and DynamoDB
   private_dns_enabled = var.private_dns_enabled
+  policy              = data.aws_iam_policy_document.ec2.json
 
   tags = merge(var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-ec2-endpoint"
   }))
+}
+
+data "aws_iam_policy_document" "ec2" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeInstances",
+      "ec2:DescribeImages",
+      "ec2:DescribeTags",
+      "ec2:DescribeInstanceAttribute",
+      "ec2:DescribeVpcAttribute",
+      "ec2:DescribeInstanceStatus",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DescribeKeyPairs",
+      "ec2:DescribeVpcEndpoints",
+      "ec2:DescribeRouteTables",
+      "ec2:CreateRoute",
+      "ec2:DeleteRoute",
+      "ec2:ModifyInstanceAttribute",
+      "ec2:ModifyVpcEndpoint",
+      "ec2:AttachNetworkInterface",
+      "ec2:DetachNetworkInterface",
+      "ec2:CreateSecurityGroup",
+      "ec2:DeleteSecurityGroup",
+      "ec2:AuthorizeSecurityGroupIngress",
+      "ec2:AuthorizeSecurityGroupEgress",
+      "ec2:RevokeSecurityGroupIngress",
+      "ec2:RevokeSecurityGroupEgress",
+      "ec2:CreateNetworkInterface",
+      "ec2:DeleteNetworkInterface",
+      "ec2:AssignPrivateIpAddresses",
+      "ec2:UnassignPrivateIpAddresses",
+    ]
+    resources = ["*"]
+  }
 }
 
 # Create a default VPC endpoint for KMS
@@ -170,6 +246,23 @@ resource "aws_vpc_endpoint" "kms_endpoint" {
   service_name        = "com.amazonaws.${var.aws_region}.kms"
   vpc_endpoint_type   = var.vpc_endpoint_type // Gateway type endpoints are available only for AWS services including S3 and DynamoDB
   private_dns_enabled = var.private_dns_enabled
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Principal = "*"
+        Action = [
+          "kms:Encrypt*",
+          "kms:Decrypt*",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:Describe*"
+        ]
+        Resource = ["*"]
+      }
+    ]
+  })
 
   tags = merge(var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-kms-endpoint"
@@ -185,6 +278,19 @@ resource "aws_vpc_endpoint" "elb_endpoint" {
   vpc_endpoint_type   = var.vpc_endpoint_type // Gateway type endpoints are available only for AWS services including S3 and DynamoDB
   auto_accept         = true
   private_dns_enabled = var.private_dns_enabled
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "elasticloadbalancing:*"
+        ]
+        Effect    = "Allow"
+        Resource  = "*"
+        Principal = "*"
+      }
+    ]
+  })
 
   tags = merge(var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-elb-endpoint"
@@ -200,6 +306,21 @@ resource "aws_vpc_endpoint" "cloudwatch_endpoint" {
   service_name        = "com.amazonaws.${var.aws_region}.logs"
   vpc_endpoint_type   = var.vpc_endpoint_type // Gateway type endpoints are available only for AWS services including S3 and DynamoDB
   private_dns_enabled = var.private_dns_enabled
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = "*",
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+        ],
+        Resource = "*",
+      },
+    ],
+  })
 
   tags = merge(var.tags, tomap({
     Name = "${var.namespace}-${var.environment}-cloudwatch-endpoint"
