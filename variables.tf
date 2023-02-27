@@ -16,6 +16,12 @@ variable "tags" {
   description = "Default tags to apply to every resource"
 }
 
+variable "aws_region" {
+  type        = string
+  default     = "us-east-1"
+  description = "Specify region for VPC endpoints"
+}
+
 ################################################################################
 ## vpc
 ################################################################################
@@ -166,6 +172,21 @@ variable "vpc_endpoints_enabled" {
   type        = bool
   description = "Enable VPC endpoints."
   default     = false
+}
+
+variable "private_dns_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "create_vpc_endpoint" {
+  type        = bool
+  description = "if the variable is set to true then the default vpc endpoint will be created"
+}
+
+variable "vpc_endpoint_type" {
+  type    = string
+  default = "Interface"
 }
 
 variable "gateway_vpc_endpoints" {
