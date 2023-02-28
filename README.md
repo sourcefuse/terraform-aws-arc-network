@@ -57,7 +57,7 @@ respectively to use the ca certificate and key generated in this module for mutu
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.54.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.56.0 |
 
 ## Modules
 
@@ -74,7 +74,15 @@ respectively to use the ca certificate and key generated in this module for mutu
 | Name | Type |
 |------|------|
 | [aws_dx_connection.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dx_connection) | resource |
+| [aws_vpc_endpoint.cloudwatch_endpoint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_endpoint.dynamodb_endpoint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_endpoint.ec2_endpoint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_endpoint.elb_endpoint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_endpoint.kms_endpoint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
+| [aws_vpc_endpoint.s3_endpoint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
 | [aws_vpn_gateway.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpn_gateway) | resource |
+| [aws_iam_policy_document.dynamodb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.ec2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
@@ -82,7 +90,12 @@ respectively to use the ca certificate and key generated in this module for mutu
 |------|-------------|------|---------|:--------:|
 | <a name="input_assign_generated_ipv6_cidr_block"></a> [assign\_generated\_ipv6\_cidr\_block](#input\_assign\_generated\_ipv6\_cidr\_block) | When `true`, assign AWS generated IPv6 CIDR block to the VPC.  Conflicts with `ipv6_ipam_pool_id`. | `bool` | `true` | no |
 | <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | List of availability zones to deploy resources in. | `list(string)` | n/a | yes |
+| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | Specify region for VPC endpoints | `string` | `"us-east-1"` | no |
+| <a name="input_client_vpn_allowed_security_group_ids"></a> [client\_vpn\_allowed\_security\_group\_ids](#input\_client\_vpn\_allowed\_security\_group\_ids) | A list of IDs of Security Groups to allow access to the security group created by this module.<br>The length of this list must be known at "plan" time. | `list(string)` | `[]` | no |
+| <a name="input_client_vpn_associated_security_group_ids"></a> [client\_vpn\_associated\_security\_group\_ids](#input\_client\_vpn\_associated\_security\_group\_ids) | A list of IDs of Security Groups to associate the VPN endpoints with, in addition to the created security group.<br>These security groups will not be modified and, if `create_security_group` is `false`, must have rules providing the desired access. | `list(string)` | `[]` | no |
+| <a name="input_client_vpn_authorization_rules"></a> [client\_vpn\_authorization\_rules](#input\_client\_vpn\_authorization\_rules) | List of objects describing the authorization rules for the client vpn | `list(map(any))` | n/a | yes |
 | <a name="input_client_vpn_client_cidr_block"></a> [client\_vpn\_client\_cidr\_block](#input\_client\_vpn\_client\_cidr\_block) | CIDR block to be assigned tpo VPN clients | `string` | `"10.1.0.0/16"` | no |
+| <a name="input_client_vpn_create_security_group"></a> [client\_vpn\_create\_security\_group](#input\_client\_vpn\_create\_security\_group) | Set `true` to create and configure a new security group. If false, `associated_security_group_ids` must be provided. | `bool` | `true` | no |
 | <a name="input_client_vpn_enabled"></a> [client\_vpn\_enabled](#input\_client\_vpn\_enabled) | Enable client VPN endpoint | `bool` | `false` | no |
 | <a name="input_client_vpn_logging_enabled"></a> [client\_vpn\_logging\_enabled](#input\_client\_vpn\_logging\_enabled) | Enable/disable CloudWatch logs for client VPN | `bool` | `true` | no |
 | <a name="input_client_vpn_organization_name"></a> [client\_vpn\_organization\_name](#input\_client\_vpn\_organization\_name) | Organization name for self signed certificates | `string` | `""` | no |
@@ -106,7 +119,10 @@ respectively to use the ca certificate and key generated in this module for mutu
 | <a name="input_internet_gateway_enabled"></a> [internet\_gateway\_enabled](#input\_internet\_gateway\_enabled) | Set `true` to create an Internet Gateway for the VPC | `bool` | `true` | no |
 | <a name="input_ipv6_egress_only_internet_gateway_enabled"></a> [ipv6\_egress\_only\_internet\_gateway\_enabled](#input\_ipv6\_egress\_only\_internet\_gateway\_enabled) | Set `true` to create an IPv6 Egress-Only Internet Gateway for the VPC | `bool` | `false` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace of the project, i.e. refarch | `string` | n/a | yes |
+| <a name="input_private_dns_enabled"></a> [private\_dns\_enabled](#input\_private\_dns\_enabled) | n/a | `bool` | `true` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Default tags to apply to every resource | `map(string)` | n/a | yes |
+| <a name="input_vpc_endpoint_config"></a> [vpc\_endpoint\_config](#input\_vpc\_endpoint\_config) | Map variable that toggles the enablement of an application | `map(bool)` | <pre>{<br>  "cloudwatch": false,<br>  "dynamodb": false,<br>  "ec2": false,<br>  "elb": false,<br>  "kms": false,<br>  "s3": false<br>}</pre> | no |
+| <a name="input_vpc_endpoint_type"></a> [vpc\_endpoint\_type](#input\_vpc\_endpoint\_type) | n/a | `string` | `"Interface"` | no |
 | <a name="input_vpc_endpoints_enabled"></a> [vpc\_endpoints\_enabled](#input\_vpc\_endpoints\_enabled) | Enable VPC endpoints. | `bool` | `false` | no |
 | <a name="input_vpc_ipv4_primary_cidr_block"></a> [vpc\_ipv4\_primary\_cidr\_block](#input\_vpc\_ipv4\_primary\_cidr\_block) | IPv4 CIDR block for the VPC to use. | `string` | n/a | yes |
 | <a name="input_vpn_gateway_enabled"></a> [vpn\_gateway\_enabled](#input\_vpn\_gateway\_enabled) | Enable VPN Gateway. | `bool` | `false` | no |
