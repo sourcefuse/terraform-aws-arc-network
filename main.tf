@@ -113,7 +113,7 @@ module "vpc_endpoints" {
 
 # Create a default VPC endpoint for S3
 resource "aws_vpc_endpoint" "s3_endpoint" {
-  count               = var.create_vpc_endpoint ? 1 : 0
+  count               = var.vpc_endpoint_config.s3 == true ? 1 : 0
   vpc_id              = module.vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.s3"
   vpc_endpoint_type   = "Gateway"
@@ -147,7 +147,7 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
 # Create a default VPC endpoint for DynamoDB
 resource "aws_vpc_endpoint" "dynamodb_endpoint" {
   # Create a default VPC endpoint for DynamoDB only if the `create_dynamodb_endpoint` variable is set to true
-  count = var.create_vpc_endpoint ? 1 : 0
+  count = var.vpc_endpoint_config.dynamodb == true ? 1 : 0
   # Specify the VPC ID where the endpoint will be created
   vpc_id = module.vpc.vpc_id
 
@@ -188,7 +188,7 @@ data "aws_iam_policy_document" "dynamodb" {
 
 # Create a default VPC endpoint for EC2
 resource "aws_vpc_endpoint" "ec2_endpoint" {
-  count = var.create_vpc_endpoint ? 1 : 0
+  count = var.vpc_endpoint_config.ec2 == true ? 1 : 0
 
   vpc_id             = module.vpc.vpc_id
   service_name       = "com.amazonaws.${var.aws_region}.ec2"
@@ -241,7 +241,7 @@ data "aws_iam_policy_document" "ec2" {
 
 # Create a default VPC endpoint for KMS
 resource "aws_vpc_endpoint" "kms_endpoint" {
-  count               = var.create_vpc_endpoint ? 1 : 0
+  count               = var.vpc_endpoint_config.kms == true ? 1 : 0
   vpc_id              = module.vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.kms"
   vpc_endpoint_type   = var.vpc_endpoint_type // Gateway type endpoints are available only for AWS services including S3 and DynamoDB
@@ -271,7 +271,7 @@ resource "aws_vpc_endpoint" "kms_endpoint" {
 
 # Create a default VPC endpoint for ELB
 resource "aws_vpc_endpoint" "elb_endpoint" {
-  count = var.create_vpc_endpoint ? 1 : 0
+  count = var.vpc_endpoint_config.elb == true ? 1 : 0
 
   vpc_id              = module.vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.elasticloadbalancing"
@@ -300,7 +300,7 @@ resource "aws_vpc_endpoint" "elb_endpoint" {
 
 # Create a default VPC endpoint for Cloudwatch
 resource "aws_vpc_endpoint" "cloudwatch_endpoint" {
-  count = var.create_vpc_endpoint ? 1 : 0
+  count = var.vpc_endpoint_config.cloudwatch == true ? 1 : 0
 
   vpc_id              = module.vpc.vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.logs"

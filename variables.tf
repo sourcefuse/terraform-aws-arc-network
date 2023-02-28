@@ -179,9 +179,17 @@ variable "private_dns_enabled" {
   default = true
 }
 
-variable "create_vpc_endpoint" {
-  type        = bool
-  description = "if the variable is set to true then the default vpc endpoint will be created"
+variable "vpc_endpoint_config" {
+  type        = map(bool)
+  description = "Map variable that toggles the enablement of an application"
+  default = {
+    s3         = false
+    kms        = false
+    cloudwatch = false
+    elb        = false
+    dynamodb   = false
+    ec2        = false
+  }
 }
 
 variable "vpc_endpoint_type" {
