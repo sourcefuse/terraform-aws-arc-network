@@ -64,8 +64,8 @@ resource "aws_vpn_gateway" "this" {
   }))
 }
 
-## client VPN 
-## meant to provide connectivity to AWS VPCs to authorised users from 
+## client VPN
+## meant to provide connectivity to AWS VPCs to authorised users from
 ## their end systems / workstations)
 
 module "client_vpn" {

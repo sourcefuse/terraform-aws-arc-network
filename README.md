@@ -57,7 +57,7 @@ respectively to use the ca certificate and key generated in this module for mutu
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.56.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.57.0 |
 
 ## Modules
 
@@ -167,7 +167,7 @@ respectively to use the ca certificate and key generated in this module for mutu
 
 ### Tests
 - Tests are available in `test` directory
-- In the test directory, run the below command 
+- In the test directory, run the below command
   ```sh
   go test -timeout 1800s
   ```
