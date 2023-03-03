@@ -201,7 +201,7 @@ module "network" {
 
 ### Tests
 - Tests are available in `test` directory
-- In the test directory, run the below command 
+- In the test directory, run the below command
   ```sh
   go test -timeout 1800s
   ```
