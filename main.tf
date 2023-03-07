@@ -23,7 +23,7 @@ terraform {
 module "vpc" {
   source = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=2.0.0"
 
-  name      = "vpc"
+  name      = var.vpc_name
   namespace = var.namespace
   stage     = var.environment
 

@@ -25,6 +25,12 @@ variable "aws_region" {
 ################################################################################
 ## vpc
 ################################################################################
+variable "vpc_name" {
+  type        = string
+  description = "VPC Name"
+  default     = "vpc"
+}
+
 variable "availability_zones" {
   type        = list(string)
   description = "List of availability zones to deploy resources in."

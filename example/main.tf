@@ -34,6 +34,7 @@ module "tags" {
 module "network" {
   source = "../."
 
+  vpc_name                    = var.vpc_name
   namespace                   = var.namespace
   environment                 = var.environment
   availability_zones          = var.availability_zones
