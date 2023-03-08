@@ -98,6 +98,7 @@ respectively to use the ca certificate and key generated in this module for mutu
 | <a name="input_client_vpn_create_security_group"></a> [client\_vpn\_create\_security\_group](#input\_client\_vpn\_create\_security\_group) | Set `true` to create and configure a new security group. If false, `associated_security_group_ids` must be provided. | `bool` | `true` | no |
 | <a name="input_client_vpn_enabled"></a> [client\_vpn\_enabled](#input\_client\_vpn\_enabled) | Enable client VPN endpoint | `bool` | `false` | no |
 | <a name="input_client_vpn_logging_enabled"></a> [client\_vpn\_logging\_enabled](#input\_client\_vpn\_logging\_enabled) | Enable/disable CloudWatch logs for client VPN | `bool` | `true` | no |
+| <a name="input_client_vpn_name_override"></a> [client\_vpn\_name\_override](#input\_client\_vpn\_name\_override) | Client VPN Name override. If left undefined, this will use the naming convention of<br>`namespace-environment-client-vpn`. | `string` | `null` | no |
 | <a name="input_client_vpn_organization_name"></a> [client\_vpn\_organization\_name](#input\_client\_vpn\_organization\_name) | Organization name for self signed certificates | `string` | `""` | no |
 | <a name="input_client_vpn_retention_in_days"></a> [client\_vpn\_retention\_in\_days](#input\_client\_vpn\_retention\_in\_days) | Number of days to retain the client VPN logs on CloudWatch | `number` | `30` | no |
 | <a name="input_client_vpn_split_tunnel"></a> [client\_vpn\_split\_tunnel](#input\_client\_vpn\_split\_tunnel) | Enable/disable split tunnel | `bool` | `true` | no |
@@ -125,6 +126,7 @@ respectively to use the ca certificate and key generated in this module for mutu
 | <a name="input_vpc_endpoint_type"></a> [vpc\_endpoint\_type](#input\_vpc\_endpoint\_type) | n/a | `string` | `"Interface"` | no |
 | <a name="input_vpc_endpoints_enabled"></a> [vpc\_endpoints\_enabled](#input\_vpc\_endpoints\_enabled) | Enable VPC endpoints. | `bool` | `false` | no |
 | <a name="input_vpc_ipv4_primary_cidr_block"></a> [vpc\_ipv4\_primary\_cidr\_block](#input\_vpc\_ipv4\_primary\_cidr\_block) | IPv4 CIDR block for the VPC to use. | `string` | n/a | yes |
+| <a name="input_vpc_name_override"></a> [vpc\_name\_override](#input\_vpc\_name\_override) | VPC Name override. If left undefined, this will use the naming convention of<br>`namespace-environment-vpc`. | `string` | `null` | no |
 | <a name="input_vpn_gateway_enabled"></a> [vpn\_gateway\_enabled](#input\_vpn\_gateway\_enabled) | Enable VPN Gateway. | `bool` | `false` | no |
 
 ## Outputs

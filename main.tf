@@ -23,9 +23,7 @@ terraform {
 module "vpc" {
   source = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=2.0.0"
 
-  name      = var.vpc_name
-  namespace = var.namespace
-  stage     = var.environment
+  name = local.vpc_name
 
   ## networking / dns
   default_network_acl_deny_all  = var.default_network_acl_deny_all
@@ -45,7 +43,7 @@ module "vpc" {
   ipv6_egress_only_internet_gateway_enabled = var.ipv6_egress_only_internet_gateway_enabled
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-vpc",
+    Name = local.vpc_name,
   }))
 }
 
@@ -60,30 +58,26 @@ resource "aws_vpn_gateway" "this" {
   vpc_id = module.vpc.vpc_id
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-vpn-gw"
+    Name = local.client_vpn_name
   }))
 }
 
 ## client VPN
 ## meant to provide connectivity to AWS VPCs to authorised users from
 ## their end systems / workstations)
-
 module "client_vpn" {
   source  = "cloudposse/ec2-client-vpn/aws"
   version = "0.14.0"
 
-  count      = var.client_vpn_enabled == true ? 1 : 0
-  depends_on = [module.vpc, module.public_subnets, module.private_subnets]
+  count = var.client_vpn_enabled == true ? 1 : 0
 
-  name      = "client-vpn"
-  namespace = var.namespace
-  stage     = var.environment
+  name = local.client_vpn_name
 
   vpc_id              = module.vpc.vpc_id
   client_cidr         = var.client_vpn_client_cidr_block
   organization_name   = local.organization_name
   logging_enabled     = var.client_vpn_logging_enabled
-  logging_stream_name = "${var.environment}-${var.namespace}-client-vpn-logs"
+  logging_stream_name = "${local.client_vpn_name}-logs"
   retention_in_days   = var.client_vpn_retention_in_days
   associated_subnets  = local.vpn_subnets
   split_tunnel        = var.client_vpn_split_tunnel
@@ -93,7 +87,11 @@ module "client_vpn" {
   allowed_security_group_ids    = var.client_vpn_allowed_security_group_ids
   associated_security_group_ids = var.client_vpn_associated_security_group_ids
 
-  tags = var.tags
+  tags = merge(var.tags, tomap({
+    Name = local.client_vpn_name
+  }))
+
+  depends_on = [module.vpc, module.public_subnets, module.private_subnets]
 }
 
 

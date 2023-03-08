@@ -25,10 +25,13 @@ variable "aws_region" {
 ################################################################################
 ## vpc
 ################################################################################
-variable "vpc_name" {
+variable "vpc_name_override" {
   type        = string
-  description = "VPC Name"
-  default     = "vpc"
+  description = <<-EOT
+    VPC Name override. If left undefined, this will use the naming convention of
+    `namespace-environment-vpc`.
+  EOT
+  default     = null
 }
 
 variable "availability_zones" {
@@ -102,6 +105,15 @@ variable "ipv6_egress_only_internet_gateway_enabled" {
 ################################################################################
 ## vpn
 ################################################################################
+variable "client_vpn_name_override" {
+  type        = string
+  description = <<-EOT
+    Client VPN Name override. If left undefined, this will use the naming convention of
+    `namespace-environment-client-vpn`.
+  EOT
+  default     = null
+}
+
 variable "vpn_gateway_enabled" {
   type        = bool
   description = "Enable VPN Gateway."
