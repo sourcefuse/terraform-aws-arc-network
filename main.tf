@@ -349,7 +349,7 @@ resource "aws_dx_connection" "this" {
 module "public_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
-  name                = local.public_subnets_name
+  name                = local.public_subnet_name
   type                = "public"
   vpc_id              = module.vpc.vpc_id
   availability_zones  = var.availability_zones
@@ -358,14 +358,14 @@ module "public_subnets" {
   nat_gateway_enabled = "true"
 
   tags = merge(var.tags, tomap({
-    Name = local.public_subnets_name
+    Name = local.public_subnet_name
   }))
 }
 
 module "private_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
-  name               = local.private_subnets_name
+  name               = local.private_subnet_name
   type               = "private"
   vpc_id             = module.vpc.vpc_id
   availability_zones = var.availability_zones
@@ -373,6 +373,6 @@ module "private_subnets" {
   az_ngw_ids         = module.public_subnets.az_ngw_ids
 
   tags = merge(var.tags, tomap({
-    Name = local.private_subnets_name
+    Name = local.private_subnet_name
   }))
 }

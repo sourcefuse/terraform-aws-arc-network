@@ -221,7 +221,7 @@ variable "dynamodb_endpoint_name_override" {
   default     = null
 }
 
-variable "public_subnets_name_override" {
+variable "public_subnet_name_override" {
   type        = string
   description = <<-EOT
      Public Subnets name. If left undefined, this will use the naming convention of
@@ -230,7 +230,7 @@ variable "public_subnets_name_override" {
   default     = null
 }
 
-variable "private_subnets_name_override" {
+variable "private_subnet_name_override" {
   type        = string
   description = <<-EOT
      Private Subnets name. If left undefined, this will use the naming convention of
