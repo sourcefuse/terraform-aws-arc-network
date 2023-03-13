@@ -23,9 +23,7 @@ terraform {
 module "vpc" {
   source = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=2.0.0"
 
-  name      = "vpc"
-  namespace = var.namespace
-  stage     = var.environment
+  name = local.vpc_name
 
   ## networking / dns
   default_network_acl_deny_all  = var.default_network_acl_deny_all
@@ -45,7 +43,7 @@ module "vpc" {
   ipv6_egress_only_internet_gateway_enabled = var.ipv6_egress_only_internet_gateway_enabled
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-vpc",
+    Name = local.vpc_name,
   }))
 }
 
@@ -60,30 +58,23 @@ resource "aws_vpn_gateway" "this" {
   vpc_id = module.vpc.vpc_id
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-vpn-gw"
+    Name = local.client_vpn_name
   }))
 }
 
 ## client VPN
 ## meant to provide connectivity to AWS VPCs to authorised users from
 ## their end systems / workstations)
-
 module "client_vpn" {
-  source  = "cloudposse/ec2-client-vpn/aws"
-  version = "0.14.0"
+  count  = var.client_vpn_enabled == true ? 1 : 0
+  source = "git::https://github.com/cloudposse/terraform-aws-ec2-client-vpn?ref=0.14.0"
 
-  count      = var.client_vpn_enabled == true ? 1 : 0
-  depends_on = [module.vpc, module.public_subnets, module.private_subnets]
-
-  name      = "client-vpn"
-  namespace = var.namespace
-  stage     = var.environment
-
+  name                = local.client_vpn_name
   vpc_id              = module.vpc.vpc_id
   client_cidr         = var.client_vpn_client_cidr_block
   organization_name   = local.organization_name
   logging_enabled     = var.client_vpn_logging_enabled
-  logging_stream_name = "${var.environment}-${var.namespace}-client-vpn-logs"
+  logging_stream_name = "${local.client_vpn_name}-logs"
   retention_in_days   = var.client_vpn_retention_in_days
   associated_subnets  = local.vpn_subnets
   split_tunnel        = var.client_vpn_split_tunnel
@@ -93,7 +84,11 @@ module "client_vpn" {
   allowed_security_group_ids    = var.client_vpn_allowed_security_group_ids
   associated_security_group_ids = var.client_vpn_associated_security_group_ids
 
-  tags = var.tags
+  tags = merge(var.tags, tomap({
+    Name = local.client_vpn_name
+  }))
+
+  depends_on = [module.vpc, module.public_subnets, module.private_subnets]
 }
 
 
@@ -140,7 +135,7 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
   })
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-s3-endpoint"
+    Name = local.s3_endpoint_name
   }))
 }
 
@@ -164,7 +159,7 @@ resource "aws_vpc_endpoint" "dynamodb_endpoint" {
   private_dns_enabled = var.private_dns_enabled
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-dynamodb-endpoint"
+    Name = local.dynamodb_endpoint_name
   }))
 }
 
@@ -199,7 +194,7 @@ resource "aws_vpc_endpoint" "ec2_endpoint" {
   policy              = data.aws_iam_policy_document.ec2.json
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-ec2-endpoint"
+    Name = local.ec2_endpoint_name
   }))
 }
 
@@ -265,7 +260,7 @@ resource "aws_vpc_endpoint" "kms_endpoint" {
   })
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-kms-endpoint"
+    Name = local.kms_endpoint_name
   }))
 }
 
@@ -293,7 +288,7 @@ resource "aws_vpc_endpoint" "elb_endpoint" {
   })
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-elb-endpoint"
+    Name = local.elb_endpoint_name
   }))
 
 }
@@ -323,7 +318,7 @@ resource "aws_vpc_endpoint" "cloudwatch_endpoint" {
   })
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-cloudwatch-endpoint"
+    Name = local.cloudwatch_endpoint_name
   }))
 }
 
@@ -335,7 +330,7 @@ resource "aws_vpc_endpoint" "cloudwatch_endpoint" {
 resource "aws_dx_connection" "this" {
   count = var.direct_connect_enabled == true ? 1 : 0
 
-  name            = "${var.namespace}-${var.environment}-dx-connection"
+  name            = local.aws_dx_connection_name
   bandwidth       = var.direct_connect_bandwidth
   provider_name   = var.direct_connect_provider
   location        = var.direct_connect_location
@@ -344,7 +339,7 @@ resource "aws_dx_connection" "this" {
   skip_destroy    = var.direct_connect_skip_destroy
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-dx-connection"
+    Name = local.aws_dx_connection_name
   }))
 }
 
@@ -354,8 +349,7 @@ resource "aws_dx_connection" "this" {
 module "public_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
-  namespace           = var.namespace
-  stage               = var.environment
+  name                = local.public_subnet_name
   type                = "public"
   vpc_id              = module.vpc.vpc_id
   availability_zones  = var.availability_zones
@@ -364,15 +358,14 @@ module "public_subnets" {
   nat_gateway_enabled = "true"
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-public-subnet"
+    Name = local.public_subnet_name
   }))
 }
 
 module "private_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
-  namespace          = var.namespace
-  stage              = var.environment
+  name               = local.private_subnet_name
   type               = "private"
   vpc_id             = module.vpc.vpc_id
   availability_zones = var.availability_zones
@@ -380,6 +373,6 @@ module "private_subnets" {
   az_ngw_ids         = module.public_subnets.az_ngw_ids
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-private-subnet"
+    Name = local.private_subnet_name
   }))
 }
