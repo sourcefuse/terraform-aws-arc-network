@@ -192,6 +192,79 @@ variable "vpc_endpoints_enabled" {
   default     = false
 }
 
+variable "ec2_endpoint_override" {
+  type        = string
+  description = <<-EOT
+     EC2 endpoint name. If left undefined, this will use the naming convention of
+    `namespace-environment-ec2-endpoint`.
+  EOT
+  default     = null
+}
+
+variable "s3_endpoint_override" {
+  type        = string
+  description = <<-EOT
+     s3 endpoint name. If left undefined, this will use the naming convention of
+    `namespace-environment-s3-endpoint`.
+  EOT
+  default     = null
+}
+
+variable "dynamodb_endpoint_override" {
+  type        = string
+  description = <<-EOT
+     dynamodb endpoint name. If left undefined, this will use the naming convention of
+    `namespace-environment-dynamodb-endpoint`.
+  EOT
+  default     = null
+}
+
+variable "public_subnets_override" {
+  type        = string
+  description = <<-EOT
+     Public Subnets name. If left undefined, this will use the naming convention of
+    `namespace-environment-public-subnet`.
+  EOT
+  default     = null
+}
+
+variable "pprivate_subnets_override" {
+  type        = string
+  description = <<-EOT
+     Private Subnets name. If left undefined, this will use the naming convention of
+    `namespace-environment-private-subnet`.
+  EOT
+  default     = null
+}
+
+variable "kms_endpoint_override" {
+  type        = string
+  description = <<-EOT
+     KMS Endpoint name. If left undefined, this will use the naming convention of
+    `namespace-environment-kms-endpoint.
+  EOT
+  default     = null
+}
+
+
+variable "elb_endpoint_override" {
+  type        = string
+  description = <<-EOT
+    ELB endpoint name. If left undefined, this will use the naming convention of
+    `namespace-environment-elb-endpoint`.
+  EOT
+  default     = null
+}
+
+variable "cloudwatch_endpoint_override" {
+  type        = string
+  description = <<-EOT
+    cloudwatch endpoint name. If left undefined, this will use the naming convention of
+    `namespace-environment-cloudwatch-endpoint`.
+  EOT
+  default     = null
+}
+
 variable "private_dns_enabled" {
   type    = bool
   default = true
@@ -261,6 +334,15 @@ variable "direct_connect_enabled" {
   description = "Enable direct connect."
   type        = bool
   default     = false
+}
+
+variable "aws_dx_connection_name_override" {
+  type        = string
+  description = <<-EOT
+    AWS DX Connection. If left undefined, this will use the naming convention of
+    `namespace-environment-dx-connection`.
+  EOT
+  default     = null
 }
 
 variable "direct_connect_bandwidth" {

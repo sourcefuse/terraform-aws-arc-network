@@ -138,7 +138,7 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
   })
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-s3-endpoint"
+    Name = s3_endpoint_name
   }))
 }
 
@@ -162,7 +162,7 @@ resource "aws_vpc_endpoint" "dynamodb_endpoint" {
   private_dns_enabled = var.private_dns_enabled
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-dynamodb-endpoint"
+    Name = local.dynamodb_endpoint_name
   }))
 }
 
@@ -197,7 +197,7 @@ resource "aws_vpc_endpoint" "ec2_endpoint" {
   policy              = data.aws_iam_policy_document.ec2.json
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-ec2-endpoint"
+    Name = local.ec2_endpoint_name
   }))
 }
 
@@ -263,7 +263,7 @@ resource "aws_vpc_endpoint" "kms_endpoint" {
   })
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-kms-endpoint"
+    Name = local.kms_endpoint_name
   }))
 }
 
@@ -291,7 +291,7 @@ resource "aws_vpc_endpoint" "elb_endpoint" {
   })
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-elb-endpoint"
+    Name = local.elb_endpoint_name
   }))
 
 }
@@ -321,7 +321,7 @@ resource "aws_vpc_endpoint" "cloudwatch_endpoint" {
   })
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-cloudwatch-endpoint"
+    Name = local.cloudwatch_endpoint_name
   }))
 }
 
@@ -333,7 +333,7 @@ resource "aws_vpc_endpoint" "cloudwatch_endpoint" {
 resource "aws_dx_connection" "this" {
   count = var.direct_connect_enabled == true ? 1 : 0
 
-  name            = "${var.namespace}-${var.environment}-dx-connection"
+  name            = local.aws_dx_connection_name
   bandwidth       = var.direct_connect_bandwidth
   provider_name   = var.direct_connect_provider
   location        = var.direct_connect_location
@@ -342,7 +342,7 @@ resource "aws_dx_connection" "this" {
   skip_destroy    = var.direct_connect_skip_destroy
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-dx-connection"
+    Name = local.aws_dx_connection_name
   }))
 }
 
@@ -352,8 +352,7 @@ resource "aws_dx_connection" "this" {
 module "public_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
-  namespace           = var.namespace
-  stage               = var.environment
+  name                = local.public_subnets_name
   type                = "public"
   vpc_id              = module.vpc.vpc_id
   availability_zones  = var.availability_zones
@@ -362,15 +361,14 @@ module "public_subnets" {
   nat_gateway_enabled = "true"
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-public-subnet"
+    Name = local.public_subnets_name
   }))
 }
 
 module "private_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
-  namespace          = var.namespace
-  stage              = var.environment
+  name               = local.private_subnets_name
   type               = "private"
   vpc_id             = module.vpc.vpc_id
   availability_zones = var.availability_zones
@@ -378,6 +376,6 @@ module "private_subnets" {
   az_ngw_ids         = module.public_subnets.az_ngw_ids
 
   tags = merge(var.tags, tomap({
-    Name = "${var.namespace}-${var.environment}-private-subnet"
+    Name = local.private_subnets_name
   }))
 }
