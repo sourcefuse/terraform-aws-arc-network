@@ -138,7 +138,7 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
   })
 
   tags = merge(var.tags, tomap({
-    Name = s3_endpoint_name
+    Name = local.s3_endpoint_name
   }))
 }
 

@@ -43,5 +43,5 @@ locals {
   dynamodb_endpoint_name = var.dynamodb_endpoint_name_override != null ? var.dynamodb_endpoint_name_override : "${local.default_base_name}-dynamodb-endpoint"
 
   ##s3 endpoint
-  s3_endpoint_name = var.s3_endpoint_name_override != null ? var.s3_endpoint_name_override : "${local.default_base_name-s3-endpoint"
+  s3_endpoint_name = var.s3_endpoint_name_override != null ? var.s3_endpoint_name_override : "${local.default_base_name}-s3-endpoint"
 }
