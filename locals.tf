@@ -14,9 +14,9 @@ locals {
 
   ## vpc
   vpc_name = var.vpc_name_override != null ? var.vpc_name_override : "${local.default_base_name}-vpc"
-  
+
   ## aws dx connection
-  aws_dx_connection_name = var.aws_dx_connection_name_ocerride != null ? var.aws_dx_connection_name_override : "${local.default_base_name}-dx-connection"
+  aws_dx_connection_name = var.aws_dx_connection_name_override != null ? var.aws_dx_connection_name_override : "${local.default_base_name}-dx-connection"
 
   ## cloudwatch endpoint
   cloudwatch_endpoint_name = var.cloudwatch_endpoint_name_override != null ? var.cloudwatch_endpoint_name_override : "${local.default_base_name}-cloudwatch-endpoint"

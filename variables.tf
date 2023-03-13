@@ -50,7 +50,7 @@ variable "default_network_acl_deny_all" {
   description = <<-EOT
     When `true`, manage the default network acl and remove all rules, disabling all ingress and egress.
     When `false`, do not mange the default networking acl, allowing it to be managed by another component.
-    EOT
+  EOT
 }
 
 variable "default_route_table_no_routes" {
@@ -60,7 +60,7 @@ variable "default_route_table_no_routes" {
     When `true`, manage the default route table and remove all routes, disabling all ingress and egress.
     When `false`, do not mange the default route table, allowing it to be managed by another component.
     Conflicts with Terraform resource `aws_main_route_table_association`.
-    EOT
+  EOT
 }
 
 variable "internet_gateway_enabled" {
@@ -87,7 +87,7 @@ variable "default_security_group_deny_all" {
   description = <<-EOT
     When `true`, manage the default security group and remove all rules, disabling all ingress and egress.
     When `false`, do not manage the default security group, allowing it to be managed by another component.
-    EOT
+  EOT
 }
 
 variable "assign_generated_ipv6_cidr_block" {
@@ -168,7 +168,7 @@ variable "client_vpn_associated_security_group_ids" {
   description = <<-EOT
     A list of IDs of Security Groups to associate the VPN endpoints with, in addition to the created security group.
     These security groups will not be modified and, if `create_security_group` is `false`, must have rules providing the desired access.
-    EOT
+  EOT
 }
 
 variable "client_vpn_allowed_security_group_ids" {
@@ -177,12 +177,14 @@ variable "client_vpn_allowed_security_group_ids" {
   description = <<-EOT
     A list of IDs of Security Groups to allow access to the security group created by this module.
     The length of this list must be known at "plan" time.
-    EOT
+  EOT
 }
+
 variable "client_vpn_authorization_rules" {
   type        = list(map(any))
   description = "List of objects describing the authorization rules for the client vpn"
 }
+
 ################################################################################
 ## vpc endpoint
 ################################################################################
@@ -192,7 +194,7 @@ variable "vpc_endpoints_enabled" {
   default     = false
 }
 
-variable "ec2_endpoint_override" {
+variable "ec2_endpoint_name_override" {
   type        = string
   description = <<-EOT
      EC2 endpoint name. If left undefined, this will use the naming convention of
@@ -201,25 +203,25 @@ variable "ec2_endpoint_override" {
   default     = null
 }
 
-variable "s3_endpoint_override" {
+variable "s3_endpoint_name_override" {
   type        = string
   description = <<-EOT
-     s3 endpoint name. If left undefined, this will use the naming convention of
+     S3 endpoint name. If left undefined, this will use the naming convention of
     `namespace-environment-s3-endpoint`.
   EOT
   default     = null
 }
 
-variable "dynamodb_endpoint_override" {
+variable "dynamodb_endpoint_name_override" {
   type        = string
   description = <<-EOT
-     dynamodb endpoint name. If left undefined, this will use the naming convention of
+     DynamoDB endpoint name. If left undefined, this will use the naming convention of
     `namespace-environment-dynamodb-endpoint`.
   EOT
   default     = null
 }
 
-variable "public_subnets_override" {
+variable "public_subnets_name_override" {
   type        = string
   description = <<-EOT
      Public Subnets name. If left undefined, this will use the naming convention of
@@ -228,7 +230,7 @@ variable "public_subnets_override" {
   default     = null
 }
 
-variable "pprivate_subnets_override" {
+variable "private_subnets_name_override" {
   type        = string
   description = <<-EOT
      Private Subnets name. If left undefined, this will use the naming convention of
@@ -237,7 +239,7 @@ variable "pprivate_subnets_override" {
   default     = null
 }
 
-variable "kms_endpoint_override" {
+variable "kms_endpoint_name_override" {
   type        = string
   description = <<-EOT
      KMS Endpoint name. If left undefined, this will use the naming convention of
@@ -246,8 +248,7 @@ variable "kms_endpoint_override" {
   default     = null
 }
 
-
-variable "elb_endpoint_override" {
+variable "elb_endpoint_name_override" {
   type        = string
   description = <<-EOT
     ELB endpoint name. If left undefined, this will use the naming convention of
@@ -256,18 +257,19 @@ variable "elb_endpoint_override" {
   default     = null
 }
 
-variable "cloudwatch_endpoint_override" {
+variable "cloudwatch_endpoint_name_override" {
   type        = string
   description = <<-EOT
-    cloudwatch endpoint name. If left undefined, this will use the naming convention of
+    CloudWatch endpoint name. If left undefined, this will use the naming convention of
     `namespace-environment-cloudwatch-endpoint`.
   EOT
   default     = null
 }
 
 variable "private_dns_enabled" {
-  type    = bool
-  default = true
+  type        = bool
+  description = "Whether to enable Private DNS for the endpoint(s)"
+  default     = true
 }
 
 variable "vpc_endpoint_config" {
@@ -284,8 +286,9 @@ variable "vpc_endpoint_config" {
 }
 
 variable "vpc_endpoint_type" {
-  type    = string
-  default = "Interface"
+  type        = string
+  description = "The VPC endpoint type, Gateway, GatewayLoadBalancer, or Interface."
+  default     = "Interface"
 }
 
 variable "gateway_vpc_endpoints" {
@@ -300,7 +303,7 @@ variable "gateway_vpc_endpoints" {
     - `policy` = A policy (as JSON string) to attach to the endpoint that controls access to the service. May be `null` for full access.
     - `route_table_ids`: List of route tables to associate the gateway with. Routes to the gateway
       will be automatically added to these route tables.
-    EOT
+  EOT
   default     = {}
 }
 
@@ -323,7 +326,7 @@ variable "interface_vpc_endpoints" {
       to maintain the association with the default security group, either leave `security_group_ids` empty or
       include the default security group ID in the list.
     - `subnet_ids`: List of subnet in which to install the endpoints.
-   EOT
+  EOT
   default     = {}
 }
 

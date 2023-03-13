@@ -66,13 +66,10 @@ resource "aws_vpn_gateway" "this" {
 ## meant to provide connectivity to AWS VPCs to authorised users from
 ## their end systems / workstations)
 module "client_vpn" {
-  source  = "cloudposse/ec2-client-vpn/aws"
-  version = "0.14.0"
+  count  = var.client_vpn_enabled == true ? 1 : 0
+  source = "git::https://github.com/cloudposse/terraform-aws-ec2-client-vpn?ref=0.14.0"
 
-  count = var.client_vpn_enabled == true ? 1 : 0
-
-  name = local.client_vpn_name
-
+  name                = local.client_vpn_name
   vpc_id              = module.vpc.vpc_id
   client_cidr         = var.client_vpn_client_cidr_block
   organization_name   = local.organization_name
