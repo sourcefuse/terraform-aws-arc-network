@@ -349,6 +349,7 @@ resource "aws_dx_connection" "this" {
 module "public_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
+  enabled             = var.auto_generate_multi_az_subnets
   name                = local.public_subnet_name
   type                = "public"
   vpc_id              = module.vpc.vpc_id
@@ -365,6 +366,7 @@ module "public_subnets" {
 module "private_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
+  enabled            = var.auto_generate_multi_az_subnets
   name               = local.private_subnet_name
   type               = "private"
   vpc_id             = module.vpc.vpc_id
