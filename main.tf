@@ -50,7 +50,6 @@ module "vpc" {
 ################################################################################
 ## vpn
 ################################################################################
-
 ## site to site VPN (meant for connect with other networks via BGP)
 resource "aws_vpn_gateway" "this" {
   count = var.vpn_gateway_enabled == true ? 1 : 0
@@ -90,7 +89,6 @@ module "client_vpn" {
 
   depends_on = [module.vpc, module.public_subnets, module.private_subnets]
 }
-
 
 ################################################################################
 ## vpc endpoint
@@ -290,7 +288,6 @@ resource "aws_vpc_endpoint" "elb_endpoint" {
   tags = merge(var.tags, tomap({
     Name = local.elb_endpoint_name
   }))
-
 }
 
 # Create a default VPC endpoint for Cloudwatch
@@ -321,8 +318,6 @@ resource "aws_vpc_endpoint" "cloudwatch_endpoint" {
     Name = local.cloudwatch_endpoint_name
   }))
 }
-
-
 
 ################################################################################
 ## direct connect
