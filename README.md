@@ -89,6 +89,7 @@ respectively to use the ca certificate and key generated in this module for mutu
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_assign_generated_ipv6_cidr_block"></a> [assign\_generated\_ipv6\_cidr\_block](#input\_assign\_generated\_ipv6\_cidr\_block) | When `true`, assign AWS generated IPv6 CIDR block to the VPC.  Conflicts with `ipv6_ipam_pool_id`. | `bool` | `true` | no |
+| <a name="input_auto_generate_multi_az_subnets"></a> [auto\_generate\_multi\_az\_subnets](#input\_auto\_generate\_multi\_az\_subnets) | Auto-generate subnets in defined availability zones | `bool` | `true` | no |
 | <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | List of availability zones to deploy resources in. | `list(string)` | n/a | yes |
 | <a name="input_aws_dx_connection_name_override"></a> [aws\_dx\_connection\_name\_override](#input\_aws\_dx\_connection\_name\_override) | AWS DX Connection. If left undefined, this will use the naming convention of<br>`namespace-environment-dx-connection`. | `string` | `null` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | Specify region for VPC endpoints | `string` | `"us-east-1"` | no |

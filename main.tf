@@ -50,7 +50,6 @@ module "vpc" {
 ################################################################################
 ## vpn
 ################################################################################
-
 ## site to site VPN (meant for connect with other networks via BGP)
 resource "aws_vpn_gateway" "this" {
   count = var.vpn_gateway_enabled == true ? 1 : 0
@@ -90,7 +89,6 @@ module "client_vpn" {
 
   depends_on = [module.vpc, module.public_subnets, module.private_subnets]
 }
-
 
 ################################################################################
 ## vpc endpoint
@@ -290,7 +288,6 @@ resource "aws_vpc_endpoint" "elb_endpoint" {
   tags = merge(var.tags, tomap({
     Name = local.elb_endpoint_name
   }))
-
 }
 
 # Create a default VPC endpoint for Cloudwatch
@@ -322,8 +319,6 @@ resource "aws_vpc_endpoint" "cloudwatch_endpoint" {
   }))
 }
 
-
-
 ################################################################################
 ## direct connect
 ################################################################################
@@ -349,6 +344,7 @@ resource "aws_dx_connection" "this" {
 module "public_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
+  enabled             = var.auto_generate_multi_az_subnets
   name                = local.public_subnet_name
   type                = "public"
   vpc_id              = module.vpc.vpc_id
@@ -365,6 +361,7 @@ module "public_subnets" {
 module "private_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
+  enabled            = var.auto_generate_multi_az_subnets
   name               = local.private_subnet_name
   type               = "private"
   vpc_id             = module.vpc.vpc_id

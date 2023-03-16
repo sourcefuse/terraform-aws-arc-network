@@ -102,6 +102,12 @@ variable "ipv6_egress_only_internet_gateway_enabled" {
   default     = false
 }
 
+variable "auto_generate_multi_az_subnets" {
+  type        = bool
+  description = "Auto-generate subnets in defined availability zones"
+  default     = true
+}
+
 ################################################################################
 ## vpn
 ################################################################################
