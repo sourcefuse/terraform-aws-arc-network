@@ -58,3 +58,8 @@ output "full_client_configuration" {
   value       = var.client_vpn_enabled == true ? local.full_client_configuration : null
   sensitive   = true
 }
+
+output "igw_id" {
+  description = "Internet gateway ID for the VPC"
+  value       = module.vpc.igw_id
+}
