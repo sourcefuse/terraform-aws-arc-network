@@ -86,8 +86,6 @@ module "client_vpn" {
   tags = merge(var.tags, tomap({
     Name = local.client_vpn_name
   }))
-
-  depends_on = [module.vpc, module.public_subnets, module.private_subnets]
 }
 
 ################################################################################
@@ -344,7 +342,7 @@ resource "aws_dx_connection" "this" {
 module "public_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
-  enabled             = var.auto_generate_multi_az_subnets
+  enabled             = var.public_subnets_enabled
   name                = local.public_subnet_name
   type                = "public"
   vpc_id              = module.vpc.vpc_id
@@ -361,7 +359,7 @@ module "public_subnets" {
 module "private_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
-  enabled            = var.auto_generate_multi_az_subnets
+  enabled            = var.private_subnets_enabled
   name               = local.private_subnet_name
   type               = "private"
   vpc_id             = module.vpc.vpc_id

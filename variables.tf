@@ -102,10 +102,28 @@ variable "ipv6_egress_only_internet_gateway_enabled" {
   default     = false
 }
 
-variable "auto_generate_multi_az_subnets" {
+variable "public_subnets_enabled" {
   type        = bool
-  description = "Auto-generate subnets in defined availability zones"
+  description = "Whether to create the public subnets or not using this module."
   default     = true
+}
+
+variable "private_subnets_enabled" {
+  type        = bool
+  description = "Whether to create the private subnets or not using this module."
+  default     = true
+}
+
+variable "public_cidr_block_override" {
+  type        = string
+  description = "Public CIDR Block to assign to the Availability Zones"
+  default     = null
+}
+
+variable "private_cidr_block_override" {
+  type        = string
+  description = "Private CIDR Block to assign to the Availability Zones"
+  default     = null
 }
 
 ################################################################################
