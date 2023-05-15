@@ -90,7 +90,6 @@ respectively to use the ca certificate and key generated in this module for mutu
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_assign_generated_ipv6_cidr_block"></a> [assign\_generated\_ipv6\_cidr\_block](#input\_assign\_generated\_ipv6\_cidr\_block) | When `true`, assign AWS generated IPv6 CIDR block to the VPC.  Conflicts with `ipv6_ipam_pool_id`. | `bool` | `true` | no |
-| <a name="input_auto_generate_multi_az_subnets"></a> [auto\_generate\_multi\_az\_subnets](#input\_auto\_generate\_multi\_az\_subnets) | Auto-generate subnets in defined availability zones | `bool` | `true` | no |
 | <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | List of availability zones to deploy resources in. | `list(string)` | n/a | yes |
 | <a name="input_aws_dx_connection_name_override"></a> [aws\_dx\_connection\_name\_override](#input\_aws\_dx\_connection\_name\_override) | AWS DX Connection. If left undefined, this will use the naming convention of<br>`namespace-environment-dx-connection`. | `string` | `null` | no |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | Specify region for VPC endpoints | `string` | `"us-east-1"` | no |
@@ -128,9 +127,13 @@ respectively to use the ca certificate and key generated in this module for mutu
 | <a name="input_ipv6_egress_only_internet_gateway_enabled"></a> [ipv6\_egress\_only\_internet\_gateway\_enabled](#input\_ipv6\_egress\_only\_internet\_gateway\_enabled) | Set `true` to create an IPv6 Egress-Only Internet Gateway for the VPC | `bool` | `false` | no |
 | <a name="input_kms_endpoint_name_override"></a> [kms\_endpoint\_name\_override](#input\_kms\_endpoint\_name\_override) | KMS Endpoint name. If left undefined, this will use the naming convention of<br>`namespace-environment-kms-endpoint.<br>` | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace of the project, i.e. refarch | `string` | n/a | yes |
+| <a name="input_private_cidr_block_override"></a> [private\_cidr\_block\_override](#input\_private\_cidr\_block\_override) | Private CIDR Block to assign to the Availability Zones | `string` | `null` | no |
 | <a name="input_private_dns_enabled"></a> [private\_dns\_enabled](#input\_private\_dns\_enabled) | Whether to enable Private DNS for the endpoint(s) | `bool` | `true` | no |
 | <a name="input_private_subnet_name_override"></a> [private\_subnet\_name\_override](#input\_private\_subnet\_name\_override) | Private Subnets name. If left undefined, this will use the naming convention of<br>`namespace-environment-private-subnet`. | `string` | `null` | no |
+| <a name="input_private_subnets_enabled"></a> [private\_subnets\_enabled](#input\_private\_subnets\_enabled) | Whether to create the private subnets or not using this module. | `bool` | `true` | no |
+| <a name="input_public_cidr_block_override"></a> [public\_cidr\_block\_override](#input\_public\_cidr\_block\_override) | Public CIDR Block to assign to the Availability Zones | `string` | `null` | no |
 | <a name="input_public_subnet_name_override"></a> [public\_subnet\_name\_override](#input\_public\_subnet\_name\_override) | Public Subnets name. If left undefined, this will use the naming convention of<br>`namespace-environment-public-subnet`. | `string` | `null` | no |
+| <a name="input_public_subnets_enabled"></a> [public\_subnets\_enabled](#input\_public\_subnets\_enabled) | Whether to create the public subnets or not using this module. | `bool` | `true` | no |
 | <a name="input_s3_endpoint_name_override"></a> [s3\_endpoint\_name\_override](#input\_s3\_endpoint\_name\_override) | S3 endpoint name. If left undefined, this will use the naming convention of<br>`namespace-environment-s3-endpoint`. | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Default tags to apply to every resource | `map(string)` | n/a | yes |
 | <a name="input_vpc_endpoint_config"></a> [vpc\_endpoint\_config](#input\_vpc\_endpoint\_config) | Map variable that toggles the enablement of an application | `map(bool)` | <pre>{<br>  "cloudwatch": false,<br>  "dynamodb": false,<br>  "ec2": false,<br>  "elb": false,<br>  "kms": false,<br>  "s3": false<br>}</pre> | no |
@@ -146,6 +149,7 @@ respectively to use the ca certificate and key generated in this module for mutu
 |------|-------------|
 | <a name="output_default_route_table_id"></a> [default\_route\_table\_id](#output\_default\_route\_table\_id) | The Default Route Table ID for the VPC |
 | <a name="output_full_client_configuration"></a> [full\_client\_configuration](#output\_full\_client\_configuration) | Client configuration including client certificate and private key |
+| <a name="output_igw_id"></a> [igw\_id](#output\_igw\_id) | Internet gateway ID for the VPC |
 | <a name="output_main_route_table_id"></a> [main\_route\_table\_id](#output\_main\_route\_table\_id) | The Main Route Table ID for the VPC |
 | <a name="output_private_subnet_cidrs"></a> [private\_subnet\_cidrs](#output\_private\_subnet\_cidrs) | Private subnet CIDRs |
 | <a name="output_private_subnet_ids"></a> [private\_subnet\_ids](#output\_private\_subnet\_ids) | Private subnet IDs |
