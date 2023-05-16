@@ -339,6 +339,18 @@ resource "aws_dx_connection" "this" {
 ################################################################################
 ## subnets
 ################################################################################
+module "custom_subnets" {
+  source = "./modules/subnets"
+
+  create_aws_network_acl = false
+  default_network_acl_id = ""
+  private_subnets = []
+  public_subnets = []
+  vpc_id = module.vpc.vpc_id
+
+  tags = var.tags
+}
+
 module "public_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
