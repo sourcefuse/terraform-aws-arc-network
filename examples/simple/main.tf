@@ -13,7 +13,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.region
+  region = var.region
 }
 
 module "tags" {
@@ -31,7 +31,7 @@ module "tags" {
 ## network
 ################################################################
 module "network" {
-  source = "../."
+  source = "../../."
 
   namespace                   = var.namespace
   environment                 = var.environment
