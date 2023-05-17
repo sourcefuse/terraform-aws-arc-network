@@ -139,61 +139,6 @@ variable "public_subnets" {
   }))
 }
 
-// TODO - remove if not needed
-/*
-variable "public_network_acl_ingress" {
-  description = "Ingress network ACL rules"
-  type = list(object({
-    rule_no         = number
-    action          = string
-    cidr_block      = string
-    from_port       = number
-    to_port         = number
-    protocol        = string
-    icmp_code       = optional(string, null)
-    icmp_type       = optional(string, null)
-    ipv6_cidr_block = optional(string, null)
-  }))
-
-  default = [
-    {
-      rule_no    = 100
-      action     = "allow"
-      cidr_block = "0.0.0.0/0"
-      from_port  = 0
-      to_port    = 0
-      protocol   = "-1"
-    }
-  ]
-}
-
-variable "public_network_acl_egress" {
-  description = "Egress network ACL rules"
-  type = list(object({
-    rule_no         = number
-    action          = string
-    cidr_block      = string
-    from_port       = number
-    to_port         = number
-    protocol        = string
-    icmp_code       = optional(string, null)
-    icmp_type       = optional(string, null)
-    ipv6_cidr_block = optional(string, null)
-  }))
-
-  default = [
-    {
-      rule_no    = 100
-      action     = "allow"
-      cidr_block = "0.0.0.0/0"
-      from_port  = 0
-      to_port    = 0
-      protocol   = "-1"
-    },
-  ]
-}
-*/
-
 variable "igw_id" {
   type        = string
   description = "Internet Gateway ID that is used as a default route when creating public subnets (e.g. `igw-9c26a123`)"
