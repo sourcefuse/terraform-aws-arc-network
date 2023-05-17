@@ -346,6 +346,7 @@ module "custom_subnets" {
   create_aws_network_acl = false
   default_network_acl_id = module.vpc.vpc_default_network_acl_id
   vpc_id                 = module.vpc.vpc_id
+  igw_id                 = module.vpc.igw_id
   private_subnets        = var.custom_private_subnets
   public_subnets         = var.custom_public_subnets
 
