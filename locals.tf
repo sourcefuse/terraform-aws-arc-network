@@ -1,6 +1,6 @@
 locals {
-  public_cidr_block         = try(var.public_cidr_block_override, cidrsubnet(module.vpc.vpc_cidr_block, 1, 0))
-  private_cidr_block        = try(var.private_cidr_block_override, cidrsubnet(module.vpc.vpc_cidr_block, 1, 1))
+  public_cidr_block         = cidrsubnet(module.vpc.vpc_cidr_block, 1, 0)
+  private_cidr_block        = cidrsubnet(module.vpc.vpc_cidr_block, 1, 1)
   organization_name         = var.client_vpn_organization_name == "" ? "${var.environment}.${var.namespace}" : var.client_vpn_organization_name
   vpn_subnets               = [for az, subnets in module.private_subnets.az_subnet_ids : subnets]
   vpn_endpoint_arn          = try(module.client_vpn[*].vpn_endpoint_arn, [])
