@@ -19,12 +19,6 @@ variable "namespace" {
   default     = "example"
 }
 
-variable "profile" {
-  type        = string
-  description = "AWS profile"
-  default     = "default"
-}
-
 ################################################################
 ## network
 ################################################################
@@ -40,5 +34,5 @@ variable "availability_zones" {
 variable "vpc_ipv4_primary_cidr_block" {
   type        = string
   description = "IPv4 CIDR block for the VPC to use."
-  default     = "10.9.0.0/16"
+  default     = "10.0.0.0/16"
 }

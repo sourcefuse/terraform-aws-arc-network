@@ -13,8 +13,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = var.region
-  profile = var.profile
+  region = var.region
 }
 
 module "tags" {
@@ -32,14 +31,41 @@ module "tags" {
 ## network
 ################################################################
 module "network" {
-  source = "../."
+  source = "../../."
 
   namespace                   = var.namespace
   environment                 = var.environment
   availability_zones          = var.availability_zones
   vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
   client_vpn_enabled          = true
-  tags                        = module.tags.tags
+
+  ## custom subnets
+  custom_subnets_enabled = true
+  custom_private_subnets = [
+    {
+      name              = "${var.namespace}-${var.environment}-private-${var.region}a"
+      availability_zone = "${var.region}a"
+      cidr_block        = "10.0.0.0/19"
+    },
+    {
+      name              = "${var.namespace}-${var.environment}-private-${var.region}b"
+      availability_zone = "${var.region}b"
+      cidr_block        = "10.0.64.0/19"
+    }
+  ]
+  custom_public_subnets = [
+    {
+      name              = "${var.namespace}-${var.environment}-public-${var.region}a"
+      availability_zone = "${var.region}a"
+      cidr_block        = "10.0.96.0/20"
+    },
+    {
+      name              = "${var.namespace}-${var.environment}-public-${var.region}b"
+      availability_zone = "${var.region}b"
+      cidr_block        = "10.0.112.0/20"
+    }
+  ]
+
   client_vpn_authorization_rules = [
     {
       target_network_cidr  = var.vpc_ipv4_primary_cidr_block
@@ -48,4 +74,5 @@ module "network" {
     }
   ]
 
+  tags = module.tags.tags
 }
