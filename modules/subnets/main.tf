@@ -58,7 +58,7 @@ resource "aws_subnet" "private" {
 
 ## network acl
 resource "aws_network_acl" "private" {
-  count      = var.create_aws_network_acl == true ? 1 : 0
+  count = var.create_aws_network_acl == true ? 1 : 0
 
   vpc_id     = var.vpc_id
   subnet_ids = var.private_network_acl_subnet_ids
