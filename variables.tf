@@ -102,28 +102,48 @@ variable "ipv6_egress_only_internet_gateway_enabled" {
   default     = false
 }
 
-variable "public_subnets_enabled" {
+variable "auto_generate_multi_az_subnets" {
   type        = bool
-  description = "Whether to create the public subnets or not using this module."
+  description = <<-EOT
+    Auto-generate subnets in defined availability zones. This value is overridden if the variable `custom_subnets_enabled`
+    is set to `true`. This is to avoid conflicts within the VPC network configuration.
+  EOT
   default     = true
 }
 
-variable "private_subnets_enabled" {
+## custom subnets
+variable "custom_subnets_enabled" {
   type        = bool
-  description = "Whether to create the private subnets or not using this module."
-  default     = true
+  description = <<-EOT
+    Set to `true` to allow custom subnet configuration.
+    If this is set to `true`, the variable `auto_generate_multi_az_subnets` will be overridden and not create the
+    multi-az subnets.
+  EOT
+  default     = false
 }
 
-variable "public_cidr_block_override" {
-  type        = string
-  description = "Public CIDR Block to assign to the Availability Zones"
-  default     = null
+variable "custom_private_subnets" {
+  description = "List of private subnets to add to the VPC"
+  type = list(object({
+    name              = string
+    availability_zone = string
+    cidr_block        = string
+    tags              = optional(map(string), {})
+  }))
+  default = []
 }
 
-variable "private_cidr_block_override" {
-  type        = string
-  description = "Private CIDR Block to assign to the Availability Zones"
-  default     = null
+variable "custom_public_subnets" {
+  description = "List of public subnets to add to the VPC"
+  type = list(object({
+    name                    = string
+    availability_zone       = string
+    cidr_block              = string
+    map_public_ip_on_launch = optional(bool, false)
+    igw_id                  = optional(string, "")
+    tags                    = optional(map(string), {})
+  }))
+  default = []
 }
 
 ################################################################################

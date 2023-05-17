@@ -341,12 +341,13 @@ resource "aws_dx_connection" "this" {
 ################################################################################
 module "custom_subnets" {
   source = "./modules/subnets"
+  count  = var.custom_subnets_enabled == true ? 1 : 0
 
   create_aws_network_acl = false
-  default_network_acl_id = ""
-  private_subnets = []
-  public_subnets = []
-  vpc_id = module.vpc.vpc_id
+  default_network_acl_id = module.vpc.vpc_default_network_acl_id
+  vpc_id                 = module.vpc.vpc_id
+  private_subnets        = var.custom_private_subnets
+  public_subnets         = var.custom_public_subnets
 
   tags = var.tags
 }
@@ -354,7 +355,7 @@ module "custom_subnets" {
 module "public_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
-  enabled             = var.public_subnets_enabled
+  enabled             = var.custom_subnets_enabled == true ? false : var.auto_generate_multi_az_subnets
   name                = local.public_subnet_name
   type                = "public"
   vpc_id              = module.vpc.vpc_id
@@ -371,7 +372,7 @@ module "public_subnets" {
 module "private_subnets" {
   source = "git::https://github.com/cloudposse/terraform-aws-multi-az-subnets.git?ref=0.15.0"
 
-  enabled            = var.private_subnets_enabled
+  enabled            = var.custom_subnets_enabled == true ? false : var.auto_generate_multi_az_subnets
   name               = local.private_subnet_name
   type               = "private"
   vpc_id             = module.vpc.vpc_id
