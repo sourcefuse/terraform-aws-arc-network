@@ -19,12 +19,6 @@ variable "namespace" {
   default     = "example"
 }
 
-variable "profile" {
-  type        = string
-  description = "AWS profile"
-  default     = "default"
-}
-
 ################################################################
 ## network
 ################################################################
