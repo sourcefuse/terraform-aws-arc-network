@@ -164,7 +164,7 @@ resource "aws_route" "public" {
   for_each = { for x in var.public_subnets : x.name => x }
 
   route_table_id         = aws_route_table.public[each.key].id
-  gateway_id             = var.igw_id // TODO - update this
+  gateway_id             = var.igw_id
   destination_cidr_block = "0.0.0.0/0"
 
   depends_on = [aws_route_table.public]
