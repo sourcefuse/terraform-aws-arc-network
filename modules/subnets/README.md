@@ -26,7 +26,6 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_default_network_acl.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_network_acl) | resource |
 | [aws_eip.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | resource |
 | [aws_nat_gateway.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway) | resource |
 | [aws_network_acl.private](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl) | resource |
@@ -45,7 +44,6 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_az_ngw_ids"></a> [az\_ngw\_ids](#input\_az\_ngw\_ids) | Only for private subnets. Map of AZ names to NAT Gateway IDs that are used as default routes when creating private subnets.<br>You should either supply one NAT Gateway ID for each AZ in `var.availability_zones` or leave the map empty.<br>If empty, no default egress route will be created and you will have to create your own using `aws_route`. | `map(string)` | `{}` | no |
 | <a name="input_create_aws_network_acl"></a> [create\_aws\_network\_acl](#input\_create\_aws\_network\_acl) | This indicates whether to create aws network acl or not | `bool` | n/a | yes |
-| <a name="input_default_network_acl_id"></a> [default\_network\_acl\_id](#input\_default\_network\_acl\_id) | Network ACL ID to manage. This attribute is exported from aws\_vpc, or manually found via the AWS Console. | `string` | n/a | yes |
 | <a name="input_igw_id"></a> [igw\_id](#input\_igw\_id) | Internet Gateway ID that is used as a default route when creating public subnets (e.g. `igw-9c26a123`) | `string` | `""` | no |
 | <a name="input_nat_gateway_enabled"></a> [nat\_gateway\_enabled](#input\_nat\_gateway\_enabled) | Enable the NAT Gateway between public and private subnets | `bool` | `true` | no |
 | <a name="input_private_network_acl_egress"></a> [private\_network\_acl\_egress](#input\_private\_network\_acl\_egress) | Egress network ACL rules | <pre>list(object({<br>    rule_no         = number<br>    action          = string<br>    cidr_block      = string<br>    from_port       = number<br>    to_port         = number<br>    protocol        = string<br>    icmp_code       = optional(string, null)<br>    icmp_type       = optional(string, null)<br>    ipv6_cidr_block = optional(string, null)<br>  }))</pre> | <pre>[<br>  {<br>    "action": "allow",<br>    "cidr_block": "0.0.0.0/0",<br>    "from_port": 0,<br>    "protocol": "-1",<br>    "rule_no": 100,<br>    "to_port": 0<br>  }<br>]</pre> | no |
