@@ -14,11 +14,6 @@ variable "tags" {
 ################################################################################
 ## default
 ################################################################################
-variable "default_network_acl_id" {
-  type        = string
-  description = "Network ACL ID to manage. This attribute is exported from aws_vpc, or manually found via the AWS Console."
-}
-
 variable "private_network_acl_subnet_ids" {
   type        = list(string)
   description = "Private network ACL Subnet IDs. This is typically unused due to using the `default_network_acl_id`."

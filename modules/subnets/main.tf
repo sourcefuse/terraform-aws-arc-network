@@ -12,34 +12,6 @@ terraform {
   }
 }
 
-resource "aws_default_network_acl" "this" {
-  default_network_acl_id = var.default_network_acl_id
-  subnet_ids = concat(
-    values(aws_subnet.private)[*].id,
-    values(aws_subnet.public)[*].id
-  )
-
-  ingress {
-    action     = "allow"
-    from_port  = 0
-    to_port    = 0
-    cidr_block = "0.0.0.0/0"
-    protocol   = "-1"
-    rule_no    = 100
-  }
-
-  egress {
-    action     = "allow"
-    from_port  = 0
-    to_port    = 0
-    cidr_block = "0.0.0.0/0"
-    protocol   = "-1"
-    rule_no    = 100
-  }
-
-  tags = var.tags
-}
-
 ################################################################################
 ## private
 ################################################################################

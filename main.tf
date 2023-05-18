@@ -343,12 +343,23 @@ module "custom_subnets" {
   source = "./modules/subnets"
   count  = var.custom_subnets_enabled == true ? 1 : 0
 
-  create_aws_network_acl = false
-  default_network_acl_id = module.vpc.vpc_default_network_acl_id
+  create_aws_network_acl = var.custom_create_aws_network_acl
   vpc_id                 = module.vpc.vpc_id
   igw_id                 = module.vpc.igw_id
-  private_subnets        = var.custom_private_subnets
-  public_subnets         = var.custom_public_subnets
+
+  ## private
+  nat_gateway_enabled                 = var.custom_nat_gateway_enabled
+  private_subnets                     = var.custom_private_subnets
+  private_network_acl_ingress         = var.custom_private_network_acl_ingress
+  private_network_acl_egress          = var.custom_private_network_acl_egress
+  private_network_acl_subnet_ids      = var.custom_private_network_acl_subnet_ids
+  az_ngw_ids                          = var.custom_az_ngw_ids
+  private_route_table_additional_tags = var.custom_private_route_table_additional_tags
+
+  ## public
+  route_table_association_enabled    = var.custom_route_table_association_enabled
+  public_subnets                     = var.custom_public_subnets
+  public_route_table_additional_tags = var.custom_public_route_table_additional_tags
 
   tags = var.tags
 }

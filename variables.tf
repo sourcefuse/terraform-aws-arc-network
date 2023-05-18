@@ -146,6 +146,104 @@ variable "custom_public_subnets" {
   default = []
 }
 
+variable "custom_create_aws_network_acl" {
+  type        = bool
+  description = "This indicates whether to create aws network acl or not"
+  default     = false
+}
+
+variable "custom_nat_gateway_enabled" {
+  description = "Enable the NAT Gateway between public and private subnets"
+  type        = bool
+  default     = true
+}
+
+variable "custom_private_network_acl_ingress" {
+  description = "Ingress network ACL rules"
+  type = list(object({
+    rule_no         = number
+    action          = string
+    cidr_block      = string
+    from_port       = number
+    to_port         = number
+    protocol        = string
+    icmp_code       = optional(string, null)
+    icmp_type       = optional(string, null)
+    ipv6_cidr_block = optional(string, null)
+  }))
+
+  default = [
+    {
+      rule_no    = 100
+      action     = "allow"
+      cidr_block = "0.0.0.0/0"
+      from_port  = 0
+      to_port    = 0
+      protocol   = "-1"
+    },
+  ]
+}
+
+variable "custom_private_network_acl_egress" {
+  description = "Egress network ACL rules"
+  type = list(object({
+    rule_no         = number
+    action          = string
+    cidr_block      = string
+    from_port       = number
+    to_port         = number
+    protocol        = string
+    icmp_code       = optional(string, null)
+    icmp_type       = optional(string, null)
+    ipv6_cidr_block = optional(string, null)
+  }))
+
+  default = [
+    {
+      rule_no    = 100
+      action     = "allow"
+      cidr_block = "0.0.0.0/0"
+      from_port  = 0
+      to_port    = 0
+      protocol   = "-1"
+    },
+  ]
+}
+
+variable "custom_private_network_acl_subnet_ids" {
+  type        = list(string)
+  description = "Private network ACL Subnet IDs. This is typically unused due to using the `default_network_acl_id`."
+  default     = []
+}
+
+variable "custom_az_ngw_ids" {
+  type        = map(string)
+  description = <<-EOT
+    Only for private subnets. Map of AZ names to NAT Gateway IDs that are used as default routes when creating private subnets.
+    You should either supply one NAT Gateway ID for each AZ in `var.availability_zones` or leave the map empty.
+    If empty, no default egress route will be created and you will have to create your own using `aws_route`.
+  EOT
+  default     = {}
+}
+
+variable "custom_route_table_association_enabled" {
+  description = "If the route table has an association."
+  type        = bool
+  default     = true
+}
+
+variable "custom_public_route_table_additional_tags" {
+  description = "Additional tags to add to the public route table"
+  type        = map(string)
+  default     = {}
+}
+
+variable "custom_private_route_table_additional_tags" {
+  description = "Additional tags to add to the private route table"
+  type        = map(string)
+  default     = {}
+}
+
 ################################################################################
 ## vpn
 ################################################################################
