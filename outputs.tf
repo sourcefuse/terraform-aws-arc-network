@@ -63,3 +63,8 @@ output "igw_id" {
   description = "Internet gateway ID for the VPC"
   value       = module.vpc.igw_id
 }
+
+output "vpc_default_network_acl_id" {
+  description = "The ID of the network ACL created by default on VPC creation"
+  value       = module.vpc.vpc_default_network_acl_id
+}
