@@ -427,6 +427,12 @@ variable "vpc_endpoint_config" {
   }
 }
 
+variable "gateway_endpoint_route_table_filter" {
+  type        = list(string)
+  description = "List of strings to filter route tables , eg [ '*private*' , '*public*' ]"
+  default     = []
+}
+
 variable "vpc_endpoint_type" {
   type        = string
   description = "The VPC endpoint type, Gateway, GatewayLoadBalancer, or Interface."

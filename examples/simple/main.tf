@@ -37,7 +37,7 @@ module "network" {
   environment                 = var.environment
   availability_zones          = var.availability_zones
   vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
-  client_vpn_enabled          = true
+  client_vpn_enabled          = false
   tags                        = module.tags.tags
   client_vpn_authorization_rules = [
     {
@@ -47,4 +47,13 @@ module "network" {
     }
   ]
 
+  vpc_endpoint_config = {
+    s3         = true
+    kms        = false
+    cloudwatch = false
+    elb        = false
+    dynamodb   = true
+    ec2        = false
+  }
+  gateway_endpoint_route_table_filter = ["*private*"]
 }
