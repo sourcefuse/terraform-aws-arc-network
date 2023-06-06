@@ -102,14 +102,24 @@ module "vpc_endpoints" {
   tags = var.tags
 }
 
+data "aws_route_tables" "gateway" {
+  count  = length(var.gateway_endpoint_route_table_filter) > 0 ? 1 : 0
+  vpc_id = module.vpc.vpc_id
+
+  filter {
+    name   = "tag:Name"
+    values = var.gateway_endpoint_route_table_filter
+  }
+
+}
+
 # Create a default VPC endpoint for S3
 resource "aws_vpc_endpoint" "s3_endpoint" {
-  count               = var.vpc_endpoint_config.s3 == true ? 1 : 0
-  vpc_id              = module.vpc.vpc_id
-  service_name        = "com.amazonaws.${var.aws_region}.s3"
-  vpc_endpoint_type   = "Gateway"
-  route_table_ids     = module.vpc.vpc_default_route_table_id
-  private_dns_enabled = var.private_dns_enabled
+  count             = var.vpc_endpoint_config.s3 == true ? 1 : 0
+  vpc_id            = module.vpc.vpc_id
+  service_name      = "com.amazonaws.${var.aws_region}.s3"
+  vpc_endpoint_type = "Gateway"
+  route_table_ids   = data.aws_route_tables.gateway[0].ids
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -147,12 +157,9 @@ resource "aws_vpc_endpoint" "dynamodb_endpoint" {
   vpc_endpoint_type = "Gateway"
 
   # Specify the route table IDs to associate with the endpoint
-  route_table_ids = module.vpc.vpc_default_route_table_id
+  route_table_ids = data.aws_route_tables.gateway[0].ids
 
   policy = data.aws_iam_policy_document.dynamodb.json
-
-  # Specify whether or not to enable private DNS
-  private_dns_enabled = var.private_dns_enabled
 
   tags = merge(var.tags, tomap({
     Name = local.dynamodb_endpoint_name
