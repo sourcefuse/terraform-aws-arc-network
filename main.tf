@@ -180,7 +180,7 @@ data "aws_iam_policy_document" "dynamodb" {
       type        = "AWS"
       identifiers = ["*"]
     }
-    resources = ["arn:aws:dynamodb:${var.aws_region}:table/*"]
+    resources = ["*"]
   }
 }
 
