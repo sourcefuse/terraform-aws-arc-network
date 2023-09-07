@@ -54,6 +54,8 @@ module "network" {
     elb        = false
     dynamodb   = true
     ec2        = false
+    sns        = true
+    sqs        = true
   }
   gateway_endpoint_route_table_filter = ["*private*"]
 }

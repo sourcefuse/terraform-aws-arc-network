@@ -324,6 +324,68 @@ resource "aws_vpc_endpoint" "cloudwatch_endpoint" {
   }))
 }
 
+# Create a default VPC endpoint for SNS
+resource "aws_vpc_endpoint" "sns_endpoint" {
+  count = var.vpc_endpoint_config.sns == true ? 1 : 0
+
+  vpc_id              = module.vpc.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.sns"
+  vpc_endpoint_type   = var.vpc_endpoint_type // Gateway type endpoints are available only for AWS services including S3 and DynamoDB
+  private_dns_enabled = var.private_dns_enabled
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = "*",
+        Action = [
+          "sns:Publish",
+          "sns:Subscribe",
+          "sns:Receive",
+        ],
+        Resource = "*",
+      },
+    ],
+  })
+
+  tags = merge(var.tags, tomap({
+    Name = local.sns_endpoint_name
+  }))
+}
+
+# Create a default VPC endpoint for SQS
+resource "aws_vpc_endpoint" "sqs_endpoint" {
+  count = var.vpc_endpoint_config.sqs == true ? 1 : 0
+
+  vpc_id              = module.vpc.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.sqs"
+  vpc_endpoint_type   = var.vpc_endpoint_type // Gateway type endpoints are available only for AWS services including S3 and DynamoDB
+  private_dns_enabled = var.private_dns_enabled
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = "*",
+        Action = [
+          "sqs:GetQueueAttributes",
+          "sqs:GetQueueUrl",
+          "sqs:ListQueues",
+          "sqs:SendMessage",
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+        ],
+        Resource = "*",
+      },
+    ],
+  })
+
+  tags = merge(var.tags, tomap({
+    Name = local.sqs_endpoint_name
+  }))
+}
+
+
 ################################################################################
 ## direct connect
 ################################################################################

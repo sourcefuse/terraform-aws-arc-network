@@ -44,4 +44,10 @@ locals {
 
   ## s3 endpoint
   s3_endpoint_name = var.s3_endpoint_name_override != null ? var.s3_endpoint_name_override : "${local.default_base_name}-s3-endpoint"
+
+  ## sns endpoint
+  sns_endpoint_name = var.sns_endpoint_name_override != null ? var.sns_endpoint_name_override : "${local.default_base_name}-sns-endpoint"
+
+  ## sqs endpoint
+  sqs_endpoint_name = var.sqs_endpoint_name_override != null ? var.sqs_endpoint_name_override : "${local.default_base_name}-sqs-endpoint"
 }
