@@ -408,6 +408,24 @@ variable "cloudwatch_endpoint_name_override" {
   default     = null
 }
 
+variable "sqs_endpoint_name_override" {
+  type        = string
+  description = <<-EOT
+    SQS endpoint name. If left undefined, this will use the naming convention of
+    `namespace-environment-sqs-endpoint`.
+  EOT
+  default     = null
+}
+
+variable "sns_endpoint_name_override" {
+  type        = string
+  description = <<-EOT
+    SNS endpoint name. If left undefined, this will use the naming convention of
+    `namespace-environment-sns-endpoint`.
+  EOT
+  default     = null
+}
+
 variable "private_dns_enabled" {
   type        = bool
   description = "Whether to enable Private DNS for the endpoint(s)"
@@ -424,6 +442,8 @@ variable "vpc_endpoint_config" {
     elb        = false
     dynamodb   = false
     ec2        = false
+    sns        = false
+    sqs        = false
   }
 }
 
