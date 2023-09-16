@@ -17,7 +17,7 @@ Create the following resources in a single region.
 * Configurable VPC Endpoints
 
 ## Usage
-See the `example` folder for a complete example.
+See the `examples` folder for a complete example.
 
 ```shell
 
@@ -86,7 +86,6 @@ respectively to use the ca certificate and key generated in this module for mutu
 | [aws_vpc_endpoint.sqs_endpoint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_endpoint) | resource |
 | [aws_vpn_gateway.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpn_gateway) | resource |
 | [aws_iam_policy_document.dynamodb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.ec2](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_route_tables.gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route_tables) | data source |
 
 ## Inputs

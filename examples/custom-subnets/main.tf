@@ -7,7 +7,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.9"
+      version = "~> 4.0"
     }
   }
 }
@@ -17,7 +17,7 @@ provider "aws" {
 }
 
 module "tags" {
-  source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.1.0"
+  source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.2.2"
 
   environment = var.environment
   project     = "terraform-aws-ref-arch-network"
@@ -73,6 +73,19 @@ module "network" {
       description          = "default authorization group to allow all authenticated clients to access the vpc"
     }
   ]
+  /// if no vpc endpoint is required then you can remove this block with gateway_endpoint_route_table_filter
+  vpc_endpoint_config = {
+    s3         = true
+    kms        = false
+    cloudwatch = false
+    elb        = false
+    dynamodb   = true
+    ec2        = false
+    sns        = true
+    sqs        = true
+  }
+
+  gateway_endpoint_route_table_filter = ["*private*"]
 
   tags = module.tags.tags
 }
