@@ -2,12 +2,12 @@
 ## defaults
 ################################################################
 terraform {
-  required_version = ">= 1.3"
+  required_version = "~> 1.3"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.0"
+      version = "~> 4.0"
     }
   }
 }
@@ -17,7 +17,7 @@ provider "aws" {
 }
 
 module "tags" {
-  source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.1.0"
+  source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.2.2"
 
   environment = var.environment
   project     = "terraform-aws-ref-arch-network"
