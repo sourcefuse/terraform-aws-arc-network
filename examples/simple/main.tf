@@ -17,7 +17,8 @@ provider "aws" {
 }
 
 module "tags" {
-  source = "git::https://github.com/sourcefuse/terraform-aws-refarch-tags.git?ref=1.2.2"
+  source  = "sourcefuse/arc-tags/aws"
+  version = "1.2.3"
 
   environment = var.environment
   project     = "terraform-aws-ref-arch-network"
@@ -31,8 +32,8 @@ module "tags" {
 ## network
 ################################################################
 module "network" {
-  source = "../../."
-
+  source                      = "sourcefuse/arc-network/aws"
+  version                     = "2.4.2"
   namespace                   = var.namespace
   environment                 = var.environment
   availability_zones          = var.availability_zones
