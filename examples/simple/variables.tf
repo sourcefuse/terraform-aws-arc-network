@@ -4,7 +4,7 @@
 variable "environment" {
   type        = string
   description = "Name of the environment, i.e. dev, stage, prod"
-  default     = "dev"
+  default     = "poc"
 }
 
 variable "region" {
@@ -16,7 +16,7 @@ variable "region" {
 variable "namespace" {
   type        = string
   description = "Namespace of the project, i.e. refarch"
-  default     = "example"
+  default     = "arc"
 }
 
 ################################################################
@@ -35,4 +35,13 @@ variable "vpc_ipv4_primary_cidr_block" {
   type        = string
   description = "IPv4 CIDR block for the VPC to use."
   default     = "10.9.0.0/16"
+}
+
+variable "vpc_name_override" {
+  type        = string
+  description = <<-EOT
+    VPC Name override. If left undefined, this will use the naming convention of
+    `namespace-environment-vpc`.
+  EOT
+  default     = "my-vpc"
 }
