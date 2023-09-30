@@ -37,11 +37,3 @@ variable "vpc_ipv4_primary_cidr_block" {
   default     = "10.9.0.0/16"
 }
 
-variable "vpc_name_override" {
-  type        = string
-  description = <<-EOT
-    VPC Name override. If left undefined, this will use the naming convention of
-    `namespace-environment-vpc`.
-  EOT
-  default     = "my-vpc"
-}
