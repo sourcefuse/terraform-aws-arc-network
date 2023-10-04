@@ -57,6 +57,8 @@ module "network" {
     ec2        = false
     sns        = true
     sqs        = true
+    ecs        = true
+    rds        = true
   }
   gateway_endpoint_route_table_filter = ["*private*"]
 }
