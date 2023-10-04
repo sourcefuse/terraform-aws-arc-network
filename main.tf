@@ -388,7 +388,7 @@ resource "aws_vpc_endpoint" "sqs_endpoint" {
 }
 
 # Create a default VPC endpoint for RDS
-resource "aws_vpc_endpoint" "rds_endpoint" {
+resource "aws_vpc_endpoint" "rds" {
   count = var.vpc_endpoint_config.rds == true ? 1 : 0
 
   vpc_id              = module.vpc.vpc_id
@@ -416,7 +416,7 @@ resource "aws_vpc_endpoint" "rds_endpoint" {
 }
 
 # Create a default VPC endpoint for ECS
-resource "aws_vpc_endpoint" "ecs_endpoint" {
+resource "aws_vpc_endpoint" "ecs" {
   count = var.vpc_endpoint_config.ecs == true ? 1 : 0
 
   vpc_id              = module.vpc.vpc_id
