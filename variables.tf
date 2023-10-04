@@ -426,6 +426,24 @@ variable "sns_endpoint_name_override" {
   default     = null
 }
 
+variable "ecs_endpoint_name_override" {
+  type        = string
+  description = <<-EOT
+    ECS endpoint name. If left undefined, this will use the naming convention of
+    `namespace-environment-ecs-endpoint`.
+  EOT
+  default     = null
+}
+
+variable "rds_endpoint_name_override" {
+  type        = string
+  description = <<-EOT
+    RDS endpoint name. If left undefined, this will use the naming convention of
+    `namespace-environment-rds-endpoint`.
+  EOT
+  default     = null
+}
+
 variable "private_dns_enabled" {
   type        = bool
   description = "Whether to enable Private DNS for the endpoint(s)"
@@ -444,6 +462,8 @@ variable "vpc_endpoint_config" {
     ec2        = false
     sns        = false
     sqs        = false
+    ecs        = false
+    rds        = false
   }
 }
 

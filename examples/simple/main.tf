@@ -32,8 +32,8 @@ module "tags" {
 ## network
 ################################################################
 module "network" {
-  source                      = "sourcefuse/arc-network/aws"
-  version                     = "2.4.2"
+  source                      = "../../"
+ 
   namespace                   = var.namespace
   environment                 = var.environment
   availability_zones          = var.availability_zones
@@ -57,6 +57,8 @@ module "network" {
     ec2        = false
     sns        = true
     sqs        = true
+    ecs        = true
+    rds        = true
   }
   gateway_endpoint_route_table_filter = ["*private*"]
 }

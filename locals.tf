@@ -50,4 +50,10 @@ locals {
 
   ## sqs endpoint
   sqs_endpoint_name = var.sqs_endpoint_name_override != null ? var.sqs_endpoint_name_override : "${local.default_base_name}-sqs-endpoint"
+
+  ## ecs endpoint
+  ecs_endpoint_name = var.ecs_endpoint_name_override != null ? var.ecs_endpoint_name_override : "${local.default_base_name}-ecs-endpoint"
+
+  ## rds endpoint
+  rds_endpoint_name = var.rds_endpoint_name_override != null ? var.rds_endpoint_name_override : "${local.default_base_name}-rds-endpoint"
 }

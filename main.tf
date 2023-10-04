@@ -387,6 +387,62 @@ resource "aws_vpc_endpoint" "sqs_endpoint" {
   }))
 }
 
+# Create a default VPC endpoint for RDS
+resource "aws_vpc_endpoint" "rds" {
+  count = var.vpc_endpoint_config.rds == true ? 1 : 0
+
+  vpc_id              = module.vpc.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.rds"
+  vpc_endpoint_type   = var.vpc_endpoint_type
+  private_dns_enabled = var.private_dns_enabled
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = "*",
+        Action = [
+          "rds:*",
+        ],
+        Resource = "*",
+      },
+    ],
+  })
+
+  tags = merge(var.tags, tomap({
+    Name = local.rds_endpoint_name
+  }))
+}
+
+# Create a default VPC endpoint for ECS
+resource "aws_vpc_endpoint" "ecs" {
+  count = var.vpc_endpoint_config.ecs == true ? 1 : 0
+
+  vpc_id              = module.vpc.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.ecs"
+  vpc_endpoint_type   = var.vpc_endpoint_type
+  private_dns_enabled = var.private_dns_enabled
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = "*",
+        Action = [
+          "ecs:*",
+        ],
+        Resource = "*",
+      },
+    ],
+  })
+
+  tags = merge(var.tags, tomap({
+    Name = local.ecs_endpoint_name
+  }))
+}
+
 
 ################################################################################
 ## direct connect
