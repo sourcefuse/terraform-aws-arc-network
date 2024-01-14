@@ -14,7 +14,7 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_network"></a> [network](#module\_network) | sourcefuse/arc-network/aws | 2.4.2 |
+| <a name="module_network"></a> [network](#module\_network) | sourcefuse/arc-network/aws | 2.6.1 |
 | <a name="module_tags"></a> [tags](#module\_tags) | sourcefuse/arc-tags/aws | 1.2.3 |
 
 ## Resources
