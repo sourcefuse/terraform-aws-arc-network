@@ -32,8 +32,8 @@ module "tags" {
 ## network
 ################################################################
 module "network" {
-  source                      = "../../"
- 
+  source                      = "sourcefuse/arc-network/aws"
+  version                     = "2.6.1"
   namespace                   = var.namespace
   environment                 = var.environment
   availability_zones          = var.availability_zones
