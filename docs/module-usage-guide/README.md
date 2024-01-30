@@ -93,7 +93,7 @@ If you encounter a bug or issue, please report it on the [GitHub repository](htt
 
 Understand the security considerations related to Network Security on AWS when using this module.
 
-### Best Practices for IAM Roles
+### Best Practices for AWS Network
 
 Follow best practices to ensure secure Network configurations:
 
