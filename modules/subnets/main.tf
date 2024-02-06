@@ -84,7 +84,7 @@ resource "aws_route_table" "private" {
 }
 
 resource "aws_route" "default" {
-  for_each = var.az_ngw_ids
+  for_each = { for x in var.private_subnets : x.name => local.subnet_ngw_ids[x.name] if local.subnet_ngw_ids[x.name] != null }
 
   route_table_id         = aws_route_table.private[each.key].id
   nat_gateway_id         = each.value

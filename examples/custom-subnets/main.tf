@@ -7,12 +7,20 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0"
+      version = "~> 5.0"
+    }
+    awsutils = {
+      source  = "cloudposse/awsutils"
+      version = "~> 0.18"
     }
   }
 }
 
 provider "aws" {
+  region = var.region
+}
+
+provider "awsutils" {
   region = var.region
 }
 
@@ -32,8 +40,8 @@ module "tags" {
 ## network
 ################################################################
 module "network" {
-  source                      = "sourcefuse/arc-network/aws"
-  version                     = "2.6.1"
+  source = "../../" #"sourcefuse/arc-network/aws"
+  #version                     = "2.6.1"
   namespace                   = var.namespace
   environment                 = var.environment
   availability_zones          = var.availability_zones
@@ -67,6 +75,17 @@ module "network" {
     }
   ]
 
+  // If have disabled the default nat gateways for your custom subnetes
+  // then you need to pass a nat gateway id for each private subnet that
+  // you are creating. If custom_az_ngw_ids is left empty in this case
+  // then no default route is created by the module.
+
+  custom_nat_gateway_enabled = false
+  custom_az_ngw_ids = {
+    "us-east-1a" = "ngw-13df3f3" // Dummy NAT gateway IDs. Use data sources or resource attributes instead.
+    "us-east-1b" = "ngw-12cesc3"
+  }
+
   client_vpn_authorization_rules = [
     {
       target_network_cidr  = var.vpc_ipv4_primary_cidr_block
@@ -74,7 +93,7 @@ module "network" {
       description          = "default authorization group to allow all authenticated clients to access the vpc"
     }
   ]
-  /// if no vpc endpoint is required then you can remove this block with gateway_endpoint_route_table_filter
+  // if no vpc endpoint is required then you can remove this block with gateway_endpoint_route_table_filter
   vpc_endpoint_config = {
     s3         = true
     kms        = false

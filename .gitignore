@@ -2,6 +2,7 @@
 terraform.tfstate
 *.tfstate*
 terraform.tfvars
+**.override*
 *.backup
 *.idea
 /secrets
