@@ -5,20 +5,11 @@
 [![Known Vulnerabilities](https://github.com/sourcefuse/terraform-aws-ref-arch-network/actions/workflows/snyk.yaml/badge.svg)](https://github.com/sourcefuse/terraform-aws-ref-arch-network/actions/workflows/snyk.yaml)
 ## Introduction
 
-SourceFuse's AWS Reference Architecture (ARC) Terraform module for managing AWS VPC and related AWS networking resources.
+SourceFuse's AWS Reference Architecture (ARC) Terraform module facilitates the creation of essential networking resources within a single region on AWS. It includes the setup of a Virtual Private Cloud (VPC) along with Multi-AZ private and public subnets for enhanced availability. Additionally, it configures route tables, internet gateways, and NAT gateways to manage traffic effectively. The module allows for customization by enabling users to specify settings for VPN Gateway, Client VPN Endpoint, and VPC Endpoints, ensuring flexibility and adaptability to diverse networking requirements.
 
 For more information about this repository and its usage, please see [Terraform AWS ARC Network Module Usage Guide](docs/module-usage-guide/README.md).
 
 ![arc_network_hla](./static/arc_network_hla.png)
-
-Create the following resources in a single region.
-
-* VPC
-* Multi-AZ private and public subnets
-* Route tables, internet gateway, and NAT gateways
-* Configurable VPN Gateway
-* Configurable Client VPN Endpoint
-* Configurable VPC Endpoints
 
 ### Prerequisites
 Before using this module, ensure you have the following:
