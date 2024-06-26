@@ -94,7 +94,8 @@ This example will create:
 
 ### Tips and Recommendations
 
-- If you want to create custom subnet ranges, check [example](https://github.com/sourcefuse/terraform-aws-arc-network/tree/main/examples/cistom-subnets)
+- If you want to create custom subnet ranges, check [example](https://github.com/sourcefuse/terraform-aws-arc-network/tree/main/examples/custom-subnets)
+- If you want to create your own nat gateway(s) check [example](https://github.com/sourcefuse/terraform-aws-arc-network/tree/main/examples/custom-nat-gateways)
 - If you have disabled the default nat gateways for your custom subnets
   then you need to pass a nat gateway id for each private subnet that
   you are creating. If custom_az_ngw_ids is left empty in this case
