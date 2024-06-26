@@ -19,7 +19,8 @@ Creating nat gateway as demonstrated in this example is a 3 step process
 - STEP 3 : finally add custom_az_ngw_ids input map and run apply
 
 This does introduce a cyclical dependency between the network module and the nat and eip resources, but it is expected
-since its a deviation from the [recommended aws nat gateway configuration](https://aws.amazon.com/blogs/networking-and-content-delivery/using-nat-gateways-with-multiple-amazon-vpcs-at-scale/). <details><summary>tldr</summary>
+since its a deviation from the [recommended aws nat gateway configuration](https://aws.amazon.com/blogs/networking-and-content-delivery/using-nat-gateways-with-multiple-amazon-vpcs-at-scale/).
+<details><summary>tldr</summary>
 
 NAT Gateways within an AZ are automatically implemented with redundancy. However, while Amazon VPCs can span multiple AZs, each NAT Gateway operates within a single AZ. If the NAT Gateway fails, then connections with resources using that NAT Gateway also fail. Therefore, we recommend deploying one NAT Gateway in each AZ and routing traffic locally within the same AZ.
 
