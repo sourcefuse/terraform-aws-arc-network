@@ -75,6 +75,21 @@ module "network" {
     }
   ]
 
+  // If you have disabled the default nat gateways for your custom subnets
+  // then you need to pass a nat gateway id for each private subnet that
+  // you are creating. If custom_az_ngw_ids is left empty in this case
+  // then no default route is created by the module.
+  // Creating nat gateway as demonstrated in this example is a 3 step process
+  // - STEP 1 : Apply the configuration without any nat gateway and eip resources and without custom_az_ngw_ids value
+  // - STEP 2 : Add nat gateway and eip resources and run apply
+  // - STEP 3 : finally add custom_az_ngw_ids input map and run apply
+
+  custom_nat_gateway_enabled = false
+  custom_az_ngw_ids = {
+    "us-east-1a" = aws_nat_gateway.example.id
+    "us-east-1b" = aws_nat_gateway.example.id
+  }
+
   client_vpn_authorization_rules = [
     {
       target_network_cidr  = var.vpc_ipv4_primary_cidr_block
@@ -99,4 +114,16 @@ module "network" {
   gateway_endpoint_route_table_filter = ["*private*"]
 
   tags = module.tags.tags
+}
+
+resource "aws_eip" "nat_eip" {
+  domain = "vpc"
+
+  tags = module.tags.tags
+}
+resource "aws_nat_gateway" "example" {
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id     = module.network.public_subnet_ids["${var.namespace}-${var.environment}-public-${var.region}a"]
+
+  tags = merge({ Name = "${var.namespace}-${var.environment}-ngw" }, module.tags.tags)
 }
