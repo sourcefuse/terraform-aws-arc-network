@@ -1,11 +1,11 @@
 output "public_subnet_ids" {
   description = "Public subnet IDs"
-  value       = module.public_subnets.az_subnet_ids
+  value       = local.public_subnet_ids
 }
 
 output "private_subnet_ids" {
   description = "Private subnet IDs"
-  value       = module.private_subnets.az_subnet_ids
+  value       = local.private_subnet_ids
 }
 
 output "public_subnet_cidrs" {
