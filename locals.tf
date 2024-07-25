@@ -56,4 +56,9 @@ locals {
 
   ## rds endpoint
   rds_endpoint_name = var.rds_endpoint_name_override != null ? var.rds_endpoint_name_override : "${local.default_base_name}-rds-endpoint"
+
+
+  ## Outputs handlers
+  public_subnet_ids  = module.public_subnets.az_subnet_ids != {} ? module.public_subnets.az_subnet_ids : module.custom_subnets[0].public_subnet_ids
+  private_subnet_ids = module.private_subnets.az_subnet_ids != {} ? module.private_subnets.az_subnet_ids : module.custom_subnets[0].private_subnet_ids
 }
