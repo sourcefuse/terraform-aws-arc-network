@@ -123,7 +123,7 @@ resource "aws_eip" "nat_eip" {
 }
 resource "aws_nat_gateway" "example" {
   allocation_id = aws_eip.nat_eip.id
-  subnet_id     = module.network.public_subnet_ids["${var.namespace}-${var.environment}-public-${var.region}a"]
+  subnet_id     = module.network.public_subnet_ids["var.availability_zones[0]"]
 
   tags = merge({ Name = "${var.namespace}-${var.environment}-ngw" }, module.tags.tags)
 }
