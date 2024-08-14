@@ -16,9 +16,7 @@ This example shows how to pass in custom subnet configuration, overriding the de
 
 ## Providers
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.35.0 |
+No providers.
 
 ## Modules
 
@@ -29,10 +27,7 @@ This example shows how to pass in custom subnet configuration, overriding the de
 
 ## Resources
 
-| Name | Type |
-|------|------|
-| [aws_eip.nat_eip](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip) | resource |
-| [aws_nat_gateway.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/nat_gateway) | resource |
+No resources.
 
 ## Inputs
 

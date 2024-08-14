@@ -2,12 +2,12 @@
 ## defaults
 ################################################################
 terraform {
-  required_version = "~> 1.3"
+  required_version = "~> 1.7"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0"
+      version = "~> 5.0"
     }
   }
 }
@@ -33,7 +33,6 @@ module "tags" {
 ################################################################
 module "network" {
   source                      = "sourcefuse/arc-network/aws"
-  version                     = "2.6.1"
   namespace                   = var.namespace
   environment                 = var.environment
   availability_zones          = var.availability_zones

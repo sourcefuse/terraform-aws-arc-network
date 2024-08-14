@@ -2,12 +2,12 @@
 ## defaults
 ################################################################################
 terraform {
-  required_version = ">= 1.3"
+  required_version = ">= 1.3, < 2.0.0"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.0"
+      version = ">= 4.0, < 6.0"
     }
   }
 }
@@ -157,8 +157,6 @@ resource "aws_route_table_association" "public" {
 ## elastic public ip
 resource "aws_eip" "public" {
   for_each = { for x in var.public_subnets : x.name => x if var.nat_gateway_enabled == true }
-
-  vpc = true
 
   tags = merge(var.tags, tomap({
     Name = each.value.name
