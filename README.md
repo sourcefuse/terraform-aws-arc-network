@@ -20,8 +20,6 @@ Create the following resources in a single region.
 * VPC
 * Multi-AZ private and public subnets
 * Route tables, internet gateway, and NAT gateways
-* Configurable VPN Gateway
-* Configurable Client VPN Endpoint
 * Configurable VPC Endpoints
 
 ### Prerequisites
@@ -37,35 +35,25 @@ See the `examples` folder for a complete example.
 ```shell
 
 module "network" {
-  source                      = "sourcefuse/arc-network/aws"
-  version                     = "2.6.10"
-  namespace                   = var.namespace
-  environment                 = var.environment
-  availability_zones          = var.availability_zones
-  vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
-  client_vpn_enabled          = false
-  tags                        = module.tags.tags
-  client_vpn_authorization_rules = [
+  namespace   = var.namespace
+  environment = var.environment
+
+  name                    = "arc-poc"
+  create_internet_geteway = true
+  availability_zones      = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  cidr_block              = "10.0.0.0/16"
+  vpc_endpoint_data = [
     {
-      target_network_cidr  = var.vpc_ipv4_primary_cidr_block
-      authorize_all_groups = true
-      description          = "default authorization group to allow all authenticated clients to access the vpc"
+      service            = "s3"
+      route_table_filter = "private"
+    },
+    {
+      service            = "dynamodb"
+      route_table_filter = "private"
     }
   ]
 
-  vpc_endpoint_config = {
-    s3         = true
-    kms        = false
-    cloudwatch = false
-    elb        = false
-    dynamodb   = true
-    ec2        = false
-    sns        = true
-    sqs        = true
-    ecs        = true
-    rds        = true
-  }
-  gateway_endpoint_route_table_filter = ["*private*"]
+  tags = module.tags.tags
 }
 
 ```
@@ -75,99 +63,93 @@ module "network" {
 
 module "network" {
   source                      = "sourcefuse/arc-network/aws"
-  version                     = "2.6.10"
+  version                     = "3.0.0"
 
-  namespace                   = var.namespace
-  environment                 = var.environment
-  availability_zones          = var.availability_zones
-  vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
-  client_vpn_enabled          = true
+  namespace   = var.namespace
+  environment = var.environment
 
-  ## custom subnets
-  custom_subnets_enabled = true
-  custom_private_subnets = [
+  name                    = "arc-poc"
+  create_internet_geteway = true
+  subnet_map              = local.subnet_map
+  cidr_block              = "10.0.0.0/16"
+  vpc_endpoint_data = [
     {
-      name              = "${var.namespace}-${var.environment}-private-${var.region}a"
-      availability_zone = "${var.region}a"
-      cidr_block        = "10.0.0.0/19"
+      service            = "s3"
+      route_table_filter = "private"
     },
     {
-      name              = "${var.namespace}-${var.environment}-private-${var.region}b"
-      availability_zone = "${var.region}b"
-      cidr_block        = "10.0.64.0/19"
+      service            = "dynamodb"
+      route_table_filter = "private"
     }
   ]
-  custom_public_subnets = [
-    {
-      name              = "${var.namespace}-${var.environment}-public-${var.region}a"
-      availability_zone = "${var.region}a"
-      cidr_block        = "10.0.96.0/20"
-    },
-    {
-      name              = "${var.namespace}-${var.environment}-public-${var.region}b"
-      availability_zone = "${var.region}b"
-      cidr_block        = "10.0.112.0/20"
-    }
-  ]
-
-  // If have disabled the default nat gateways for your custom subnetes
-  // then you need to pass a nat gateway id for each private subnet that
-  // you are creating. If custom_az_ngw_ids is left empty in this case
-  // then no default route is created by the module.
-
-  custom_nat_gateway_enabled = false
-  custom_az_ngw_ids = {
-    "us-east-1a" = "ngw-13df3f3" // Dummy NAT gateway IDs. Use data sources or resource attributes instead.
-    "us-east-1b" = "ngw-12cesc3"
-  }
-
-  client_vpn_authorization_rules = [
-    {
-      target_network_cidr  = var.vpc_ipv4_primary_cidr_block
-      authorize_all_groups = true
-      description          = "default authorization group to allow all authenticated clients to access the vpc"
-    }
-  ]
-  // if no vpc endpoint is required then you can remove this block with gateway_endpoint_route_table_filter
-  vpc_endpoint_config = {
-    s3         = true
-    kms        = false
-    cloudwatch = false
-    elb        = false
-    dynamodb   = true
-    ec2        = false
-    sns        = true
-    sqs        = true
-    ecs        = true
-    rds        = true
-  }
-
-  gateway_endpoint_route_table_filter = ["*private*"]
 
   tags = module.tags.tags
+
 }
 
+locals {
+
+  prefix = "arc-poc"
+
+  subnet_map = {
+    "${local.prefix}-public-az1" = {
+      name                    = "${local.prefix}-public-az1"
+      cidr_block              = "10.0.0.0/19"
+      availability_zone       = "us-east-1a"
+      nat_gateway_name        = "${local.prefix}-az1-ngtw01"
+      attach_nat_gateway      = false
+      create_nat_gateway      = true
+      attach_internet_gateway = true
+    },
+    "${local.prefix}-public-az2" = {
+      name                    = "${local.prefix}-public-az2"
+      cidr_block              = "10.0.32.0/19"
+      availability_zone       = "us-east-1b"
+      nat_gateway_name        = "${local.prefix}-az2-ngtw01"
+      attach_nat_gateway      = false
+      create_nat_gateway      = true
+      attach_internet_gateway = true
+    },
+    "${local.prefix}-db-az1" = {
+      name                    = "${local.prefix}-db-az1"
+      cidr_block              = "10.0.64.0/19"
+      availability_zone       = "us-east-1a"
+      nat_gateway_name        = "${local.prefix}-az1-ngtw01"
+      attach_nat_gateway      = true
+      create_nat_gateway      = false
+      attach_internet_gateway = false
+    },
+    "${local.prefix}-db-az2" = {
+      name                    = "${local.prefix}-db-az2"
+      cidr_block              = "10.0.96.0/19"
+      availability_zone       = "us-east-1b"
+      nat_gateway_name        = "${local.prefix}-az2-ngtw01"
+      attach_nat_gateway      = true
+      create_nat_gateway      = false
+      attach_internet_gateway = false
+    },
+    "${local.prefix}-app-az1" = {
+      name                    = "${local.prefix}-app-az1"
+      cidr_block              = "10.0.128.0/19"
+      availability_zone       = "us-east-1a"
+      nat_gateway_name        = "${local.prefix}-az1-ngtw01"
+      attach_nat_gateway      = true
+      create_nat_gateway      = false
+      attach_internet_gateway = false
+    },
+    "${local.prefix}-app-az2" = {
+      name                    = "${local.prefix}-app-az2"
+      cidr_block              = "10.0.160.0/19"
+      availability_zone       = "us-east-1b"
+      nat_gateway_name        = "${local.prefix}-az2-ngtw01"
+      attach_nat_gateway      = true
+      create_nat_gateway      = false
+      attach_internet_gateway = false
+    }
+  }
+}
 
 ```
-
-## Configuring your VPN Client
-
-Please reference the [AWS Documentation](https://docs.aws.amazon.com/vpn/latest/clientvpn-admin/cvpn-working-endpoint-export.html) on how to configure the client
-once the VPN has been configured in AWS.
-
-The pki keys and certificates can be obtained from the respective SSM parameters and can be used
-to generate client certificate for mutual authentication using easy-rsa.
-
-You shall need to copy the ca cert and ca key to:
-
-/path/etc/pki/ca.crt
-
-and
-
-/path/etc/pki/private/ca.key
-
-respectively to use the ca certificate and key generated in this module for mutual auth.
-
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
