@@ -1,14 +1,22 @@
-output "vpn_endpoint_dns_name" {
-  value       = module.network.vpn_endpoint_dns_name
-  description = "The DNS Name of the Client VPN Endpoint Connection."
+output "vpc_id" {
+  value       = module.network.id
+  description = "VPC ID"
 }
 
 output "public_subnet_ids" {
+  description = "Public subnet IDs"
   value       = module.network.public_subnet_ids
-  description = "public subnets per az"
 }
 
 output "private_subnet_ids" {
+  description = "Private subnet IDs"
   value       = module.network.private_subnet_ids
-  description = "private subnets per availibility zones"
 }
+
+# output "public_subnet_cidrs" {
+#   value = module.network.public_subnet_cidrs
+# }
+
+# output "private_subnet_cidrs" {
+#   value = module.network.private_subnet_cidrs
+# }
