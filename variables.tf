@@ -161,6 +161,12 @@ variable "vpc_endpoint_data" {
   default     = []
 }
 
+variable "availability_zones" {
+  type        = list(string)
+  description = "(optional) List of availability zones , if subnet map is null , subnet map autimatically derived"
+  default     = []
+}
+
 variable "tags" {
   type        = map(string)
   description = "(optional) Tags for VPC resources"

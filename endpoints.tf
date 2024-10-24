@@ -8,6 +8,8 @@ data "aws_route_tables" "private" {
     name   = "tag:Name"
     values = ["*private*"]
   }
+
+  depends_on = [aws_route_table.this]
 }
 
 data "aws_route_tables" "public" {
@@ -18,6 +20,8 @@ data "aws_route_tables" "public" {
     name   = "tag:Name"
     values = ["*public*"]
   }
+
+  depends_on = [aws_route_table.this]
 }
 
 resource "aws_vpc_endpoint" "this" {

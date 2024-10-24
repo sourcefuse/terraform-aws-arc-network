@@ -23,6 +23,7 @@ resource "aws_vpc" "this" {
 }
 
 resource "aws_internet_gateway" "this" {
+  count  = var.create_internet_geteway ? 1 : 0
   vpc_id = aws_vpc.this.id
 
   tags = merge(
@@ -35,7 +36,7 @@ resource "aws_internet_gateway" "this" {
 
 resource "aws_subnet" "this" {
 
-  for_each = var.subnet_map
+  for_each = local.subnet_map
 
   vpc_id                                         = aws_vpc.this.id
   cidr_block                                     = each.value.cidr_block
@@ -89,7 +90,7 @@ resource "aws_nat_gateway" "this" {
 
 # Creates one Route table for each Subnet
 resource "aws_route_table" "this" {
-  for_each = var.subnet_map
+  for_each = local.subnet_map
 
   vpc_id = aws_vpc.this.id
 
@@ -114,11 +115,11 @@ resource "aws_route" "internet_gw" {
 
   route_table_id         = aws_route_table.this[each.key].id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.this.id
+  gateway_id             = aws_internet_gateway.this[0].id
 }
 
 resource "aws_route_table_association" "this" {
-  for_each = var.subnet_map
+  for_each = local.subnet_map
 
   subnet_id      = aws_subnet.this[each.key].id
   route_table_id = aws_route_table.this[each.key].id

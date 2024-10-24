@@ -32,32 +32,25 @@ module "tags" {
 ## network
 ################################################################
 module "network" {
-  source                      = "sourcefuse/arc-network/aws"
-  namespace                   = var.namespace
-  environment                 = var.environment
-  availability_zones          = var.availability_zones
-  vpc_ipv4_primary_cidr_block = var.vpc_ipv4_primary_cidr_block
-  client_vpn_enabled          = false
-  tags                        = module.tags.tags
-  client_vpn_authorization_rules = [
+  source = "../../"
+
+  namespace   = var.namespace
+  environment = var.environment
+
+  name                    = "arc-poc"
+  create_internet_geteway = true
+  availability_zones      = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  cidr_block              = "10.0.0.0/16"
+  vpc_endpoint_data = [
     {
-      target_network_cidr  = var.vpc_ipv4_primary_cidr_block
-      authorize_all_groups = true
-      description          = "default authorization group to allow all authenticated clients to access the vpc"
+      service            = "s3"
+      route_table_filter = "private"
+    },
+    {
+      service            = "dynamodb"
+      route_table_filter = "private"
     }
   ]
 
-  vpc_endpoint_config = {
-    s3         = true
-    kms        = false
-    cloudwatch = false
-    elb        = false
-    dynamodb   = true
-    ec2        = false
-    sns        = true
-    sqs        = true
-    ecs        = true
-    rds        = true
-  }
-  gateway_endpoint_route_table_filter = ["*private*"]
+  tags = module.tags.tags
 }
