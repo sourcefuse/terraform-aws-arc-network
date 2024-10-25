@@ -5,21 +5,13 @@ output "id" {
 
 output "public_subnet_ids" {
   description = "Public subnet IDs"
-  value       = data.aws_subnets.public.ids
+  value       = [for key, value in local.internet_gw_routes : aws_subnet.this[key].id]
 }
 
 output "private_subnet_ids" {
   description = "Private subnet IDs"
-  value       = data.aws_subnets.private.ids
+  value       = [for key, value in local.nat_gw_routes : aws_subnet.this[key].id]
 }
-
-# output "public_subnet_cidrs" {
-#   value = [for s in data.aws_subnets.public : s.cidr_block]
-# }
-
-# output "private_subnet_cidrs" {
-#   value = [for s in data.aws_subnets.private : s.cidr_block]
-# }
 
 output "vpc_cidr" {
   description = "The VPC CIDR block"
