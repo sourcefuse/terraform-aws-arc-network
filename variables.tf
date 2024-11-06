@@ -172,3 +172,45 @@ variable "tags" {
   description = "(optional) Tags for VPC resources"
   default     = {}
 }
+
+variable "enable_vpc_flow_log_to_cloudwatch" {
+  type        = bool
+  description = "Flag to enable or disable VPC flow logs."
+  default     = false
+}
+
+variable "region" {
+  type        = string
+  description = "AWS region"
+  default     = "us-east-1"
+}
+
+variable "deletion_window_in_days" {
+  type        = number
+  default     = 10
+  description = "Duration in days after which the key is deleted after destruction of the resource"
+}
+
+variable "enable_key_rotation" {
+  type        = bool
+  default     = true
+  description = "Specifies whether key rotation is enabled"
+}
+
+variable "enabled" {
+  type        = bool
+  default     = true
+  description = "Set to false to prevent the module from creating any resources"
+}
+
+variable "retention_in_days" {
+  description = "The number of days to retain CloudWatch log events."
+  type        = number
+  default     = 7
+}
+
+variable "enable_flow_logs" {
+  description = "Boolean flag to enable or disable VPC flow logs"
+  type        = bool
+  default     = false
+}

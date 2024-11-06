@@ -58,4 +58,5 @@ locals {
       attach_internet_gateway = false
     }
   }
+
 }

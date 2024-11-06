@@ -145,3 +145,86 @@ resource "aws_route_table_association" "additional" {
   subnet_id      = aws_subnet.this[each.value.key].id
   route_table_id = aws_route_table.this[each.value.key].id
 }
+
+# Module for KMS Key Management
+module "kms" {
+  source                  = "sourcefuse/arc-kms/aws"
+  version                 = "1.0.9" // use the latest version from registry.
+  enabled                 = var.enabled
+  deletion_window_in_days = var.deletion_window_in_days
+  enable_key_rotation     = var.enable_key_rotation
+  alias                   = "alias/vpc-flow-logs-key"
+  tags = merge(
+    {
+      Name = "${var.name}-kms-vpc-flowlogs"
+    },
+    var.tags
+  )
+  policy = local.kms_policy
+}
+
+#### AWS Caller Identity Data Source
+data "aws_caller_identity" "current" {}
+
+### CloudWatch Log Group for VPC Flow Logs
+resource "aws_cloudwatch_log_group" "this" {
+  count             = var.enable_vpc_flow_log_to_cloudwatch ? 1 : 0
+  name_prefix       = "${var.name}-vpcflowlog"
+  kms_key_id        = module.kms.key_arn
+  retention_in_days = var.retention_in_days
+}
+
+### IAM Policy Document for VPC Flow Logs Role Trust Policy
+data "aws_iam_policy_document" "assume" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["vpc-flow-logs.amazonaws.com"]
+    }
+  }
+}
+
+### IAM Role for VPC Flow Logs
+resource "aws_iam_role" "this" {
+  count              = var.enable_vpc_flow_log_to_cloudwatch ? 1 : 0
+  name_prefix        = "${var.name}-vpcflowlog-role"
+  assume_role_policy = data.aws_iam_policy_document.assume.json
+}
+
+# IAM Policy for Flow Logs
+data "aws_iam_policy_document" "flow_logs_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams"
+    ]
+    resources = local.enable_flow_logs && length(aws_cloudwatch_log_group.this) > 0 ? [aws_cloudwatch_log_group.this[0].arn] : ["*"]
+  }
+}
+
+resource "aws_iam_policy" "this" {
+  count       = var.enable_vpc_flow_log_to_cloudwatch ? 1 : 0
+  name_prefix = "${var.name}-vpcflowlog-policy"
+  policy      = data.aws_iam_policy_document.flow_logs_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "attach_flow_logs_policy" {
+  count      = var.enable_vpc_flow_log_to_cloudwatch ? 1 : 0
+  role       = aws_iam_role.this[count.index].name
+  policy_arn = aws_iam_policy.this[count.index].arn
+}
+
+# VPC Flow Log Configuration for CloudWatch
+resource "aws_flow_log" "cloudwatch" {
+  count           = var.enable_vpc_flow_log_to_cloudwatch ? 1 : 0
+  iam_role_arn    = aws_iam_role.this[count.index].arn
+  log_destination = aws_cloudwatch_log_group.this[0].arn
+  traffic_type    = "ALL"
+  vpc_id          = aws_vpc.this.id
+}

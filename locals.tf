@@ -12,5 +12,39 @@ locals {
   additional_routes     = flatten([for key, value in local.subnet_map : [for route in value.additional_routes : merge({ key : key }, route)] if length(value.additional_routes) > 0])
   additional_routes_map = { for route in local.additional_routes : route.id => route }
 
-  subnet_map = var.subnet_map == null ? tomap(local.subnet_map_auto) : var.subnet_map
+  subnet_map       = var.subnet_map == null ? tomap(local.subnet_map_auto) : var.subnet_map
+  enable_flow_logs = var.enable_flow_logs
+
+
+  ##### KMS policy for
+  kms_policy = jsonencode({
+    Version = "2012-10-17"
+    Id      = "VPCFlowLogsPolicy"
+    Statement = [
+      {
+        Sid    = "AllowRootAccount"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+        Action   = "kms:*"
+        Resource = "*"
+      },
+      {
+        Sid    = "AllowCloudWatchLogs"
+        Effect = "Allow"
+        Principal = {
+          Service = "logs.${var.region}.amazonaws.com"
+        }
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
 }
