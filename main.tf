@@ -149,7 +149,7 @@ resource "aws_route_table_association" "additional" {
 # Module for KMS Key Management
 module "kms" {
   source                  = "sourcefuse/arc-kms/aws"
-  version                 = "1.0.9" // use the latest version from registry.
+  version                 = "1.0.9"
   enabled                 = var.enabled
   deletion_window_in_days = var.deletion_window_in_days
   enable_key_rotation     = var.enable_key_rotation

@@ -1,3 +1,4 @@
+data "aws_region" "current" {}
 locals {
 
   prefix                = "${var.namespace}-${var.environment}"
@@ -14,7 +15,6 @@ locals {
 
   subnet_map       = var.subnet_map == null ? tomap(local.subnet_map_auto) : var.subnet_map
   enable_flow_logs = var.enable_flow_logs
-
 
   ##### KMS policy for
   kms_policy = jsonencode({
@@ -34,7 +34,7 @@ locals {
         Sid    = "AllowCloudWatchLogs"
         Effect = "Allow"
         Principal = {
-          Service = "logs.${var.region}.amazonaws.com"
+          Service = "logs.${data.aws_region.current.name}.amazonaws.com"
         }
         Action = [
           "kms:Encrypt",

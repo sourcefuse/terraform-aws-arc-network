@@ -175,14 +175,8 @@ variable "tags" {
 
 variable "enable_vpc_flow_log_to_cloudwatch" {
   type        = bool
-  description = "Flag to enable or disable VPC flow logs."
+  description = "Flag to enable or disable VPC flow logs to Cloudwatch."
   default     = false
-}
-
-variable "region" {
-  type        = string
-  description = "AWS region"
-  default     = "us-east-1"
 }
 
 variable "deletion_window_in_days" {
