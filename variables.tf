@@ -203,8 +203,23 @@ variable "retention_in_days" {
   default     = 7
 }
 
-variable "enable_flow_logs" {
-  description = "Boolean flag to enable or disable VPC flow logs"
+# variable "enable_flow_logs" {
+#   description = "Boolean flag to enable or disable VPC flow logs"
+#   type        = bool
+#   default     = false
+# }
+
+variable "enable_vpc_flow_log_to_s3" {
+  default     = true
+  description = "Flag to enable or disable VPC flow logs to S3"
   type        = bool
-  default     = false
+}
+
+variable "acl" {
+  type        = string
+  default     = "private"
+  description = <<-EOT
+    Please node ACL is deprecated by AWS in favor of bucket policies.
+    Defaults to "private" for backwards compatibility,recommended to set `s3_object_ownership` to "BucketOwnerEnforced" instead.
+  EOT
 }

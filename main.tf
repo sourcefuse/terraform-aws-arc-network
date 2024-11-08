@@ -150,6 +150,7 @@ resource "aws_route_table_association" "additional" {
 module "kms" {
   source                  = "sourcefuse/arc-kms/aws"
   version                 = "1.0.9"
+  count                   = var.enable_vpc_flow_log_to_cloudwatch ? 1 : 0
   enabled                 = var.enabled
   deletion_window_in_days = var.deletion_window_in_days
   enable_key_rotation     = var.enable_key_rotation
@@ -163,6 +164,23 @@ module "kms" {
   policy = local.kms_policy
 }
 
+
+module "s3" {
+  source           = "sourcefuse/arc-s3/aws"
+  version          = "0.0.4"
+  count            = var.enable_vpc_flow_log_to_s3 ? 1 : 0
+  name             = "${var.name}-vpc-flowlogs"
+  acl              = var.acl
+  lifecycle_config = local.lifecycle_config
+  tags = merge(
+    {
+      Name = "${var.name}-vpc-flowlogs"
+    },
+    var.tags
+  )
+}
+
+
 #### AWS Caller Identity Data Source
 data "aws_caller_identity" "current" {}
 
@@ -170,7 +188,7 @@ data "aws_caller_identity" "current" {}
 resource "aws_cloudwatch_log_group" "this" {
   count             = var.enable_vpc_flow_log_to_cloudwatch ? 1 : 0
   name_prefix       = "${var.name}-vpcflowlog"
-  kms_key_id        = module.kms.key_arn
+  kms_key_id        = module.kms[0].key_arn
   retention_in_days = var.retention_in_days
 }
 
@@ -204,7 +222,7 @@ data "aws_iam_policy_document" "flow_logs_policy" {
       "logs:DescribeLogGroups",
       "logs:DescribeLogStreams"
     ]
-    resources = local.enable_flow_logs && length(aws_cloudwatch_log_group.this) > 0 ? [aws_cloudwatch_log_group.this[0].arn] : ["*"]
+    resources = local.enable_vpc_flow_log_to_cloudwatch && length(aws_cloudwatch_log_group.this) > 0 ? [aws_cloudwatch_log_group.this[0].arn] : ["*"]
   }
 }
 
@@ -227,4 +245,13 @@ resource "aws_flow_log" "cloudwatch" {
   log_destination = aws_cloudwatch_log_group.this[0].arn
   traffic_type    = "ALL"
   vpc_id          = aws_vpc.this.id
+}
+
+# VPC Flow Log Configuration for S3
+resource "aws_flow_log" "s3" {
+  count                = var.enable_vpc_flow_log_to_s3 ? 1 : 0
+  log_destination      = module.s3[0].bucket_arn
+  log_destination_type = "s3"
+  traffic_type         = "ALL"
+  vpc_id               = aws_vpc.this.id
 }

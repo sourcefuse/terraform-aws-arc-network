@@ -13,8 +13,8 @@ locals {
   additional_routes     = flatten([for key, value in local.subnet_map : [for route in value.additional_routes : merge({ key : key }, route)] if length(value.additional_routes) > 0])
   additional_routes_map = { for route in local.additional_routes : route.id => route }
 
-  subnet_map       = var.subnet_map == null ? tomap(local.subnet_map_auto) : var.subnet_map
-  enable_flow_logs = var.enable_flow_logs
+  subnet_map                        = var.subnet_map == null ? tomap(local.subnet_map_auto) : var.subnet_map
+  enable_vpc_flow_log_to_cloudwatch = var.enable_vpc_flow_log_to_cloudwatch
 
   ##### KMS policy for
   kms_policy = jsonencode({
@@ -47,4 +47,41 @@ locals {
       }
     ]
   })
+
+  ## S3 bucket policy
+  lifecycle_config = {
+    enabled = true
+    rules = [
+      {
+        id = "rule-1"
+        expiration = {
+          date = "2024-12-31T00:00:00.000Z"
+        }
+        transition = {
+          date          = "2024-12-30T00:00:00.000Z"
+          days          = 180
+          storage_class = "GLACIER"
+        }
+
+        noncurrent_version_expiration = {
+          newer_noncurrent_versions = 2
+          noncurrent_days           = 200
+        }
+        noncurrent_version_transition = {
+          newer_noncurrent_versions = 2
+          noncurrent_days           = 30
+          storage_class             = "STANDARD_IA"
+        }
+        filter = {
+          object_size_greater_than = "131072"
+          object_size_less_than    = "1000000"
+          prefix                   = "logs/"
+          tags = {
+            "environment" = "production"
+            "department"  = "IT"
+          }
+        }
+      }
+    ]
+  }
 }
