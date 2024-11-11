@@ -40,7 +40,7 @@ module "network" {
   name                              = "arc-poc"
   create_internet_geteway           = true
   enable_vpc_flow_log_to_cloudwatch = true
-  enable_vpc_flow_log_to_s3         = true
+  enable_vpc_flow_log_to_s3         = false
 
   availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
   cidr_block         = "10.0.0.0/16"

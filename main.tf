@@ -222,7 +222,8 @@ data "aws_iam_policy_document" "flow_logs_policy" {
       "logs:DescribeLogGroups",
       "logs:DescribeLogStreams"
     ]
-    resources = local.enable_vpc_flow_log_to_cloudwatch && length(aws_cloudwatch_log_group.this) > 0 ? [aws_cloudwatch_log_group.this[0].arn] : ["*"]
+    resources = local.enable_vpc_flow_log_to_cloudwatch && length(aws_cloudwatch_log_group.this) > 0 ? [aws_cloudwatch_log_group.this[0].arn, "${aws_cloudwatch_log_group.this[0].arn}:*"] : ["*"]
+
   }
 }
 
