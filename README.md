@@ -169,7 +169,6 @@ locals {
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_kms"></a> [kms](#module\_kms) | sourcefuse/arc-kms/aws | 1.0.9 |
-| <a name="module_s3"></a> [s3](#module\_s3) | sourcefuse/arc-s3/aws | 0.0.4 |
 
 ## Resources
 
@@ -205,19 +204,16 @@ locals {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_acl"></a> [acl](#input\_acl) | Please node ACL is deprecated by AWS in favor of bucket policies.<br>Defaults to "private" for backwards compatibility,recommended to set `s3_object_ownership` to "BucketOwnerEnforced" instead. | `string` | `"private"` | no |
 | <a name="input_assign_generated_ipv6_cidr_block"></a> [assign\_generated\_ipv6\_cidr\_block](#input\_assign\_generated\_ipv6\_cidr\_block) | Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. | `bool` | `false` | no |
 | <a name="input_availability_zones"></a> [availability\_zones](#input\_availability\_zones) | (optional) List of availability zones , if subnet map is null , subnet map autimatically derived | `list(string)` | `[]` | no |
+| <a name="input_bucket_arn"></a> [bucket\_arn](#input\_bucket\_arn) | The ARN of the S3 bucket where VPC flow logs will be stored if flow logs to S3 are enabled. This bucket must be created in advance, as the module will not create it. | `string` | `null` | no |
 | <a name="input_cidr_block"></a> [cidr\_block](#input\_cidr\_block) | The CIDR block for the VPC. | `string` | n/a | yes |
 | <a name="input_create_internet_geteway"></a> [create\_internet\_geteway](#input\_create\_internet\_geteway) | (optional) Whether to create internet gateway | `bool` | `true` | no |
-| <a name="input_deletion_window_in_days"></a> [deletion\_window\_in\_days](#input\_deletion\_window\_in\_days) | Duration in days after which the key is deleted after destruction of the resource | `number` | `10` | no |
 | <a name="input_enable_dns_hostnames"></a> [enable\_dns\_hostnames](#input\_enable\_dns\_hostnames) | A boolean flag to enable/disable DNS hostnames in the VPC. | `bool` | `true` | no |
 | <a name="input_enable_dns_support"></a> [enable\_dns\_support](#input\_enable\_dns\_support) | A boolean flag to enable/disable DNS support in the VPC. | `bool` | `true` | no |
-| <a name="input_enable_key_rotation"></a> [enable\_key\_rotation](#input\_enable\_key\_rotation) | Specifies whether key rotation is enabled | `bool` | `true` | no |
 | <a name="input_enable_network_address_usage_metrics"></a> [enable\_network\_address\_usage\_metrics](#input\_enable\_network\_address\_usage\_metrics) | Enable or disable network address usage metrics. | `bool` | `false` | no |
-| <a name="input_enable_vpc_flow_log_to_cloudwatch"></a> [enable\_vpc\_flow\_log\_to\_cloudwatch](#input\_enable\_vpc\_flow\_log\_to\_cloudwatch) | Flag to enable or disable VPC flow logs to Cloudwatch. | `bool` | `false` | no |
-| <a name="input_enable_vpc_flow_log_to_s3"></a> [enable\_vpc\_flow\_log\_to\_s3](#input\_enable\_vpc\_flow\_log\_to\_s3) | Flag to enable or disable VPC flow logs to S3 | `bool` | `true` | no |
-| <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating any resources | `bool` | `true` | no |
+| <a name="input_enable_vpc_flow_log"></a> [enable\_vpc\_flow\_log](#input\_enable\_vpc\_flow\_log) | Flag to enable or disable VPC flow logs to Cloudwatch. | `bool` | `false` | no |
+| <a name="input_enable_vpc_flow_log_to_s3"></a> [enable\_vpc\_flow\_log\_to\_s3](#input\_enable\_vpc\_flow\_log\_to\_s3) | Flag to enable or disable VPC flow logs to S3 | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environmenr name | `string` | n/a | yes |
 | <a name="input_instance_tenancy"></a> [instance\_tenancy](#input\_instance\_tenancy) | A tenancy option for instances launched into the VPC. Can be 'default' or 'dedicated'. | `string` | `"default"` | no |
 | <a name="input_internet_geteway_name"></a> [internet\_geteway\_name](#input\_internet\_geteway\_name) | (optional) If the Internet Gateway name is not provided, it will be automatically derived. | `string` | `null` | no |
@@ -227,6 +223,7 @@ locals {
 | <a name="input_ipv6_cidr_block_network_border_group"></a> [ipv6\_cidr\_block\_network\_border\_group](#input\_ipv6\_cidr\_block\_network\_border\_group) | The network border group of the IPv6 CIDR block. | `string` | `null` | no |
 | <a name="input_ipv6_ipam_pool_id"></a> [ipv6\_ipam\_pool\_id](#input\_ipv6\_ipam\_pool\_id) | The IPv6 IPAM pool ID from which to allocate the CIDR. | `string` | `null` | no |
 | <a name="input_ipv6_netmask_length"></a> [ipv6\_netmask\_length](#input\_ipv6\_netmask\_length) | The netmask length of the IPv6 CIDR block to allocate to the VPC. | `number` | `null` | no |
+| <a name="input_kms_config"></a> [kms\_config](#input\_kms\_config) | n/a | <pre>object({<br>    deletion_window_in_days = number<br>    enable_key_rotation     = bool<br>  })</pre> | <pre>{<br>  "deletion_window_in_days": 30,<br>  "enable_key_rotation": true<br>}</pre> | no |
 | <a name="input_name"></a> [name](#input\_name) | VPC name | `string` | n/a | yes |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Namespace name | `string` | n/a | yes |
 | <a name="input_retention_in_days"></a> [retention\_in\_days](#input\_retention\_in\_days) | The number of days to retain CloudWatch log events. | `number` | `7` | no |

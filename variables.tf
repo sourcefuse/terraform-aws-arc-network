@@ -173,28 +173,10 @@ variable "tags" {
   default     = {}
 }
 
-variable "enable_vpc_flow_log_to_cloudwatch" {
+variable "enable_vpc_flow_log" {
   type        = bool
   description = "Flag to enable or disable VPC flow logs to Cloudwatch."
   default     = false
-}
-
-variable "deletion_window_in_days" {
-  type        = number
-  default     = 10
-  description = "Duration in days after which the key is deleted after destruction of the resource"
-}
-
-variable "enable_key_rotation" {
-  type        = bool
-  default     = true
-  description = "Specifies whether key rotation is enabled"
-}
-
-variable "enabled" {
-  type        = bool
-  default     = true
-  description = "Set to false to prevent the module from creating any resources"
 }
 
 variable "retention_in_days" {
@@ -202,24 +184,26 @@ variable "retention_in_days" {
   type        = number
   default     = 7
 }
-
-# variable "enable_flow_logs" {
-#   description = "Boolean flag to enable or disable VPC flow logs"
-#   type        = bool
-#   default     = false
-# }
-
 variable "enable_vpc_flow_log_to_s3" {
-  default     = true
+  default     = false
   description = "Flag to enable or disable VPC flow logs to S3"
   type        = bool
 }
 
-variable "acl" {
+variable "bucket_arn" {
+  description = "The ARN of the S3 bucket where VPC flow logs will be stored if flow logs to S3 are enabled. This bucket must be created in advance, as the module will not create it."
   type        = string
-  default     = "private"
-  description = <<-EOT
-    Please node ACL is deprecated by AWS in favor of bucket policies.
-    Defaults to "private" for backwards compatibility,recommended to set `s3_object_ownership` to "BucketOwnerEnforced" instead.
-  EOT
+  default     = null # Set as null by default, can be overridden
+}
+
+
+variable "kms_config" {
+  type = object({
+    deletion_window_in_days = number
+    enable_key_rotation     = bool
+  })
+  default = {
+    deletion_window_in_days = 30
+    enable_key_rotation     = true
+  }
 }
