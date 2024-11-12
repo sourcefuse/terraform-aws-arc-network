@@ -172,31 +172,6 @@ variable "tags" {
   description = "(optional) Tags for VPC resources"
   default     = {}
 }
-
-variable "enable_vpc_flow_log" {
-  type        = bool
-  description = "Flag to enable or disable VPC flow logs to Cloudwatch."
-  default     = false
-}
-
-variable "retention_in_days" {
-  description = "The number of days to retain CloudWatch log events."
-  type        = number
-  default     = 7
-}
-variable "enable_vpc_flow_log_to_s3" {
-  default     = false
-  description = "Flag to enable or disable VPC flow logs to S3"
-  type        = bool
-}
-
-variable "bucket_arn" {
-  description = "The ARN of the S3 bucket where VPC flow logs will be stored if flow logs to S3 are enabled. This bucket must be created in advance, as the module will not create it."
-  type        = string
-  default     = null # Set as null by default, can be overridden
-}
-
-
 variable "kms_config" {
   type = object({
     deletion_window_in_days = number
@@ -205,5 +180,22 @@ variable "kms_config" {
   default = {
     deletion_window_in_days = 30
     enable_key_rotation     = true
+  }
+}
+
+# Variable for VPC Flow Log Configuration
+variable "vpc_flow_log_config" {
+  description = "Configuration settings for VPC flow logs."
+  type = object({
+    enable_to_cloudwatch = bool   # Enable VPC flow logs to CloudWatch
+    retention_in_days    = number # Retention period in CloudWatch
+    enable_to_s3         = bool   # Enable VPC flow logs to S3
+    bucket_arn           = string # S3 bucket ARN for VPC flow logs (if enabled)
+  })
+  default = {
+    enable_to_cloudwatch = false
+    retention_in_days    = 7
+    enable_to_s3         = false
+    bucket_arn           = null
   }
 }

@@ -41,7 +41,12 @@ module "network" {
   create_internet_geteway = true
   subnet_map              = local.subnet_map
   cidr_block              = "10.0.0.0/16"
-  enable_vpc_flow_log     = true
+  vpc_flow_log_config = {
+    enable_to_cloudwatch = true
+    retention_in_days    = 7
+    enable_to_s3         = false
+    bucket_arn           = null
+  }
 
   vpc_endpoint_data = [
     {
