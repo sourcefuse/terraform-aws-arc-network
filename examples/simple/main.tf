@@ -14,6 +14,10 @@ terraform {
 
 provider "aws" {
   region = var.region
+
+  default_tags {
+    tags = module.tags.tags
+  }
 }
 
 module "tags" {
@@ -39,11 +43,11 @@ module "network" {
 
   name                    = "arc-poc"
   create_internet_geteway = true
+  # Enable flow logs:If `s3_bucket_arn` is null, CloudWatch logging is enabled by default. If provided, S3 logging is enabled
   vpc_flow_log_config = {
-    enable_to_cloudwatch = true
-    retention_in_days    = 7
-    enable_to_s3         = false
-    bucket_arn           = null
+    enable_vpc_flow_log = true
+    retention_in_days   = 7
+    s3_bucket_arn       = null
   }
 
 

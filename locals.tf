@@ -14,7 +14,7 @@ locals {
   additional_routes_map = { for route in local.additional_routes : route.id => route }
 
   subnet_map          = var.subnet_map == null ? tomap(local.subnet_map_auto) : var.subnet_map
-  enable_vpc_flow_log = var.vpc_flow_log_config.enable_to_cloudwatch
+  enable_vpc_flow_log = var.vpc_flow_log_config.enable_vpc_flow_log
 
   ##### KMS policy for
   kms_policy = jsonencode({
