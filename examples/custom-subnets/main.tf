@@ -42,7 +42,7 @@ module "network" {
   subnet_map              = local.subnet_map
   cidr_block              = "10.0.0.0/16"
 
-  # Enable flow logs:If `s3_bucket_arn` is null, CloudWatch logging is enabled by default. If provided, S3 logging is enabled
+  # Enable vpc_flow_logs:If `s3_bucket_arn` is null, CloudWatch logging is enabled by default. If provided, S3 logging is enabled
   vpc_flow_log_config = {
     enable_vpc_flow_log = true
     retention_in_days   = 7
