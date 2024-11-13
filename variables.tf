@@ -183,7 +183,6 @@ variable "kms_config" {
   }
 }
 
-# Variable for VPC Flow Log Configuration
 variable "vpc_flow_log_config" {
   description = "If `s3_bucket_arn` is null, only CloudWatch logging is enabled by default. If `s3_bucket_arn` is provided, S3 logging is enabled."
   type = object({
