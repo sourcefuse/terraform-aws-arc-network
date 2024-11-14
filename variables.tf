@@ -172,3 +172,27 @@ variable "tags" {
   description = "(optional) Tags for VPC resources"
   default     = {}
 }
+variable "kms_config" {
+  type = object({
+    deletion_window_in_days = number
+    enable_key_rotation     = bool
+  })
+  default = {
+    deletion_window_in_days = 30
+    enable_key_rotation     = true
+  }
+}
+
+variable "vpc_flow_log_config" {
+  description = "If `s3_bucket_arn` is null, only CloudWatch logging is enabled by default. If `s3_bucket_arn` is provided, S3 logging is enabled."
+  type = object({
+    enable            = bool
+    retention_in_days = number
+    s3_bucket_arn     = string
+  })
+  default = {
+    enable            = true
+    retention_in_days = 7
+    s3_bucket_arn     = null
+  }
+}
