@@ -186,13 +186,13 @@ variable "kms_config" {
 variable "vpc_flow_log_config" {
   description = "If `s3_bucket_arn` is null, only CloudWatch logging is enabled by default. If `s3_bucket_arn` is provided, S3 logging is enabled."
   type = object({
-    enable_vpc_flow_log = bool
-    retention_in_days   = number
-    s3_bucket_arn       = string
+    enable            = bool
+    retention_in_days = number
+    s3_bucket_arn     = string
   })
   default = {
-    enable_vpc_flow_log = true
-    retention_in_days   = 7
-    s3_bucket_arn       = null
+    enable            = true
+    retention_in_days = 7
+    s3_bucket_arn     = null
   }
 }

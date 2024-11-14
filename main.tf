@@ -150,7 +150,7 @@ resource "aws_route_table_association" "additional" {
 module "kms" {
   source                  = "sourcefuse/arc-kms/aws"
   version                 = "1.0.9"
-  count                   = var.vpc_flow_log_config.enable_vpc_flow_log ? 1 : 0
+  count                   = var.vpc_flow_log_config.enable ? 1 : 0
   deletion_window_in_days = var.kms_config.deletion_window_in_days
   enable_key_rotation     = var.kms_config.enable_key_rotation
   alias                   = "alias/vpc-flow-logs-key"
@@ -168,7 +168,7 @@ data "aws_caller_identity" "current" {}
 
 ### CloudWatch Log Group for VPC Flow Logs
 resource "aws_cloudwatch_log_group" "this" {
-  count             = var.vpc_flow_log_config.enable_vpc_flow_log ? 1 : 0
+  count             = var.vpc_flow_log_config.enable ? 1 : 0
   name_prefix       = "${var.name}-vpcflowlog"
   kms_key_id        = module.kms[0].key_arn
   retention_in_days = var.vpc_flow_log_config.retention_in_days
@@ -189,7 +189,7 @@ data "aws_iam_policy_document" "assume" {
 
 ### IAM Role for VPC Flow Logs
 resource "aws_iam_role" "this" {
-  count              = var.vpc_flow_log_config.enable_vpc_flow_log ? 1 : 0
+  count              = var.vpc_flow_log_config.enable ? 1 : 0
   name_prefix        = "${var.name}-vpcflowlog-role"
   assume_role_policy = data.aws_iam_policy_document.assume.json
 }
@@ -210,13 +210,13 @@ data "aws_iam_policy_document" "flow_logs_policy" {
 }
 
 resource "aws_iam_policy" "this" {
-  count       = var.vpc_flow_log_config.enable_vpc_flow_log ? 1 : 0
+  count       = var.vpc_flow_log_config.enable ? 1 : 0
   name_prefix = "${var.name}-vpcflowlog-policy"
   policy      = data.aws_iam_policy_document.flow_logs_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "attach_flow_logs_policy" {
-  count      = var.vpc_flow_log_config.enable_vpc_flow_log ? 1 : 0
+  count      = var.vpc_flow_log_config.enable ? 1 : 0
   role       = aws_iam_role.this[count.index].name
   policy_arn = aws_iam_policy.this[count.index].arn
 }
@@ -225,7 +225,7 @@ resource "aws_iam_role_policy_attachment" "attach_flow_logs_policy" {
 # VPC Flow Log Configuration
 
 resource "aws_flow_log" "this" {
-  count        = var.vpc_flow_log_config.enable_vpc_flow_log ? 1 : 0
+  count        = var.vpc_flow_log_config.enable ? 1 : 0
   traffic_type = "ALL"
   vpc_id       = aws_vpc.this.id
 
