@@ -1,6 +1,6 @@
 variable "environment" {
   type        = string
-  description = "Environmenr name"
+  description = "Specifies the name of the deployment environment (e.g., dev, stage, prod)."
 }
 
 variable "namespace" {
@@ -85,13 +85,13 @@ variable "ipv6_cidr_block_network_border_group" {
 }
 
 
-variable "create_internet_geteway" {
+variable "create_internet_gateway" {
   type        = bool
   description = "(optional) Whether to create internet gateway"
   default     = true
 }
 
-variable "internet_geteway_name" {
+variable "internet_gateway_name" {
   type        = string
   description = "(optional) If the Internet Gateway name is not provided, it will be automatically derived."
   default     = null
@@ -163,7 +163,7 @@ variable "vpc_endpoint_data" {
 
 variable "availability_zones" {
   type        = list(string)
-  description = "(optional) List of availability zones , if subnet map is null , subnet map autimatically derived"
+  description = "(optional) List of availability zones , if subnet map is null , subnet map automatically derived"
   default     = []
 }
 

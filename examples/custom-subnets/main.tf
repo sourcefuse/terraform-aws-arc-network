@@ -38,7 +38,7 @@ module "network" {
   environment = var.environment
 
   name                    = "arc-poc"
-  create_internet_geteway = true
+  create_internet_gateway = true
   subnet_map              = local.subnet_map
   cidr_block              = "10.0.0.0/16"
 
