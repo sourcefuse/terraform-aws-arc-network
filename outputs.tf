@@ -28,14 +28,14 @@ output "main_route_table_id" {
   value       = aws_vpc.this.main_route_table_id
 }
 
-output "vpn_endpoint_arn" {
+output "vpc_endpoint_arn" {
   value       = [for endpoint in aws_vpc_endpoint.this : endpoint.arn]
-  description = "The ARN of the Client VPN Endpoint Connection."
+  description = "The ARN of the VPC Endpoint Connection."
 }
 
 output "igw_id" {
   description = "Internet gateway ID for the VPC"
-  value       = var.create_internet_geteway ? aws_internet_gateway.this[0].id : null
+  value       = var.create_internet_gateway ? aws_internet_gateway.this[0].id : null
 }
 
 output "vpc_default_network_acl_id" {
