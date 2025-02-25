@@ -80,7 +80,7 @@ resource "aws_nat_gateway" "this" {
 
   tags = merge(
     {
-      Name = "${each.value.availability_zone}-ngw"
+      Name = each.value.nat_gateway_name
     },
     var.tags
   )
