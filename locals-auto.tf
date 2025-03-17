@@ -7,8 +7,8 @@ locals {
 
   subnet_bits = ceil(log(length(var.availability_zones), 2))
 
-  public_subnet_data = { for idx, az in var.availability_zones : "${var.name}-public-${az}-${idx + 1}" => {
-    name                    = "${var.name}-${az}-${idx + 1}"
+  public_subnet_data = { for idx, az in var.availability_zones : "${var.name}-public-${az}" => {
+    name                    = "${var.name}-public-${az}"
     cidr_block              = cidrsubnet(local.public_cidr, local.subnet_bits, idx)
     availability_zone       = az
     nat_gateway_name        = null
@@ -26,11 +26,11 @@ locals {
     additional_routes                              = []
     }
   }
-  private_subnet_data = { for idx, az in var.availability_zones : "${var.name}-private-${az}-${idx + 1}" => {
-    name                    = "${var.name}-${az}-${idx + 1}"
+  private_subnet_data = { for idx, az in var.availability_zones : "${var.name}-private-${az}" => {
+    name                    = "${var.name}-private-${az}"
     cidr_block              = cidrsubnet(local.private_cidr, local.subnet_bits, idx)
     availability_zone       = az
-    nat_gateway_name        = "${var.name}-${az}-ngw-${idx + 1}"
+    nat_gateway_name        = "${var.name}-${az}-ngw"
     create_nat_gateway      = true
     attach_nat_gateway      = true
     attach_internet_gateway = false

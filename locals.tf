@@ -2,7 +2,7 @@ data "aws_region" "current" {}
 locals {
 
   prefix                = "${var.namespace}-${var.environment}"
-  internet_gateway_name = var.internet_gateway_name != null ? "${var.namespace}-${var.environment}-igw" : var.internet_gateway_name
+  internet_gateway_name = var.internet_gateway_name != null ? var.internet_gateway_name : "${var.namespace}-${var.environment}-igw"
 
   nat_gateway_data = { for key, value in local.subnet_map : key => merge(value, { key = key })
   if value.create_nat_gateway }

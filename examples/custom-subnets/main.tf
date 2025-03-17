@@ -37,7 +37,7 @@ module "network" {
   namespace   = var.namespace
   environment = var.environment
 
-  name                    = "arc-poc"
+  name                    = "${var.namespace}-${var.environment}"
   create_internet_gateway = true
   subnet_map              = local.subnet_map
   cidr_block              = "10.0.0.0/16"
