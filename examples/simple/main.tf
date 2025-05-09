@@ -41,7 +41,7 @@ module "network" {
   namespace   = var.namespace
   environment = var.environment
 
-  name                    = "arc-poc"
+  name                    = "${var.namespace}-${var.environment}"
   create_internet_gateway = true
   # Enable vpc_flow_logs:If `s3_bucket_arn` is null, CloudWatch logging is enabled by default. If provided, S3 logging is enabled
   vpc_flow_log_config = {

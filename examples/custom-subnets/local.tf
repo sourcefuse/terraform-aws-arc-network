@@ -1,6 +1,6 @@
 locals {
 
-  prefix = "arc-poc"
+  prefix = "${var.namespace}-${var.environment}"
 
   subnet_map = {
     "${local.prefix}-public-az1" = {
