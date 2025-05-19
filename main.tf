@@ -153,7 +153,7 @@ module "kms" {
   count                   = var.vpc_flow_log_config.enable ? 1 : 0
   deletion_window_in_days = var.kms_config.deletion_window_in_days
   enable_key_rotation     = var.kms_config.enable_key_rotation
-  alias                   = "alias/vpc-flow-logs-key"
+  alias                   = "alias/${var.name}-vpc-flow-logs-key"
   tags = merge(
     {
       Name = "${var.name}-kms-vpc-flowlogs"
