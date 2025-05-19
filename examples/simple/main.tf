@@ -45,7 +45,7 @@ module "network" {
   create_internet_gateway = true
   # Enable vpc_flow_logs:If `s3_bucket_arn` is null, CloudWatch logging is enabled by default. If provided, S3 logging is enabled
   vpc_flow_log_config = {
-    enable            = false
+    enable            = true
     retention_in_days = 7
     s3_bucket_arn     = ""
   }
