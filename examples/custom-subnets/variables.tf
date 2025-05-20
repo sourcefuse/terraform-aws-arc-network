@@ -16,5 +16,5 @@ variable "region" {
 variable "namespace" {
   type        = string
   description = "Namespace of the project, i.e. refarch"
-  default     = "arc"
+  default     = "arc-terratest"
 }
