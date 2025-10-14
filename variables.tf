@@ -196,3 +196,17 @@ variable "vpc_flow_log_config" {
     s3_bucket_arn     = null
   }
 }
+
+variable "dhcp_options_config" {
+  description = "Configuration for VPC DHCP options. Set to null to use default AWS DHCP options."
+  type = object({
+    domain_name                       = optional(string)
+    domain_name_servers               = optional(list(string))
+    ipv6_address_preferred_lease_time = optional(number)
+    ntp_servers                       = optional(list(string))
+    netbios_name_servers              = optional(list(string))
+    netbios_node_type                 = optional(number)
+    tags                              = optional(map(string), {})
+  })
+  default = null
+}

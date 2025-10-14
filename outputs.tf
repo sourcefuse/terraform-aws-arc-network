@@ -42,3 +42,13 @@ output "vpc_default_network_acl_id" {
   description = "The ID of the network ACL created by default on VPC creation"
   value       = aws_vpc.this.default_network_acl_id
 }
+
+output "dhcp_options_id" {
+  description = "The ID of the DHCP Options Set"
+  value       = var.dhcp_options_config != null ? aws_vpc_dhcp_options.this[0].id : null
+}
+
+output "dhcp_options_arn" {
+  description = "The ARN of the DHCP Options Set"
+  value       = var.dhcp_options_config != null ? aws_vpc_dhcp_options.this[0].arn : null
+}
