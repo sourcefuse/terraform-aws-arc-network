@@ -242,3 +242,29 @@ resource "aws_flow_log" "this" {
   )
 
 }
+
+
+resource "aws_vpc_dhcp_options" "this" {
+  count = var.dhcp_options_config != null ? 1 : 0
+
+  domain_name                       = var.dhcp_options_config.domain_name
+  domain_name_servers               = var.dhcp_options_config.domain_name_servers
+  ipv6_address_preferred_lease_time = var.dhcp_options_config.ipv6_address_preferred_lease_time
+  ntp_servers                       = var.dhcp_options_config.ntp_servers
+  netbios_name_servers              = var.dhcp_options_config.netbios_name_servers
+  netbios_node_type                 = var.dhcp_options_config.netbios_node_type
+
+  tags = merge(
+    {
+      Name = "${var.name}-dhcp-options"
+    },
+    var.tags,
+    var.dhcp_options_config.tags
+  )
+}
+
+resource "aws_vpc_dhcp_options_association" "this" {
+  count           = var.dhcp_options_config != null ? 1 : 0
+  vpc_id          = aws_vpc.this.id
+  dhcp_options_id = aws_vpc_dhcp_options.this[0].id
+}

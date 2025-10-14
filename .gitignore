@@ -6,3 +6,4 @@ terraform.tfvars
 *.backup
 *.idea
 /secrets
+.DS_Store
