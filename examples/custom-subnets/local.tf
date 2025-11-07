@@ -1,6 +1,6 @@
 locals {
 
-  prefix = "${var.namespace}-${var.environment}"
+  prefix = "${var.namespace}-${var.environment}-custom"
 
   subnet_map = {
     "${local.prefix}-public-az1" = {

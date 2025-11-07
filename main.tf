@@ -55,7 +55,8 @@ resource "aws_subnet" "this" {
     {
       Name = each.value.name
     },
-    var.tags
+    var.tags,
+    each.value.tags
   )
 }
 

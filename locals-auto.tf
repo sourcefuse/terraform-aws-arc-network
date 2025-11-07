@@ -24,6 +24,7 @@ locals {
     ipv6_cidr_block                                = null
     enable_dns64                                   = false
     additional_routes                              = []
+    tags                                           = var.public_subnet_tags
     }
   }
   private_subnet_data = { for idx, az in var.availability_zones : "${var.name}-private-${az}" => {
@@ -43,6 +44,7 @@ locals {
     ipv6_cidr_block                                = null
     enable_dns64                                   = false
     additional_routes                              = []
+    tags                                           = var.private_subnet_tags
     }
   }
 

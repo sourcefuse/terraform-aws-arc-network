@@ -121,6 +121,7 @@ variable "subnet_map" {
       destination_ipv6_cidr_block = optional(string, null)
       }
     )), [])
+    tags = optional(map(string), {})
   }))
   default     = null
   description = <<-EOT
@@ -146,6 +147,7 @@ variable "subnet_map" {
       - **id**: The ID of the route target (e.g., a Transit Gateway ID).
       - **cidr_block**: The destination CIDR block for the route.
       - **destination_ipv6_cidr_block**: The destination IPV6 CIDR block for the route.
+    - **tags**: Additional tags to apply to the subnet (default: {}).
   EOT
 }
 
@@ -165,6 +167,18 @@ variable "availability_zones" {
   type        = list(string)
   description = "(optional) List of availability zones , if subnet map is null , subnet map automatically derived"
   default     = []
+}
+
+variable "public_subnet_tags" {
+  type        = map(string)
+  description = "(optional) Additional tags for auto-generated public subnets"
+  default     = {}
+}
+
+variable "private_subnet_tags" {
+  type        = map(string)
+  description = "(optional) Additional tags for auto-generated private subnets"
+  default     = {}
 }
 
 variable "tags" {
