@@ -11,6 +11,10 @@ locals {
       attach_nat_gateway      = false
       create_nat_gateway      = true
       attach_internet_gateway = true
+      tags = {
+        "kubernetes.io/role/elb"           = "1"
+        "kubernetes.io/cluster/my-cluster" = "shared"
+      }
     },
     "${local.prefix}-public-az2" = {
       name                    = "${local.prefix}-public-az2"
@@ -47,6 +51,10 @@ locals {
       attach_nat_gateway      = true
       create_nat_gateway      = false
       attach_internet_gateway = false
+      tags = {
+        "kubernetes.io/role/internal-elb"  = "1"
+        "kubernetes.io/cluster/my-cluster" = "shared"
+      }
     },
     "${local.prefix}-app-az2" = {
       name                    = "${local.prefix}-app-az2"

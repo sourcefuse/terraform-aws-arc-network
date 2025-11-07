@@ -169,13 +169,13 @@ variable "availability_zones" {
   default     = []
 }
 
-variable "public_subnet_tags" {
+variable "additional_public_subnet_tags" {
   type        = map(string)
   description = "(optional) Additional tags for auto-generated public subnets"
   default     = {}
 }
 
-variable "private_subnet_tags" {
+variable "additional_private_subnet_tags" {
   type        = map(string)
   description = "(optional) Additional tags for auto-generated private subnets"
   default     = {}
