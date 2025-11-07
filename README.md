@@ -150,6 +150,53 @@ locals {
 }
 
 ```
+
+## EKS Compatibility
+
+This module supports AWS EKS (Elastic Kubernetes Service) by enabling per-subnet custom tagging. EKS requires specific tags on subnets for proper ALB/NLB provisioning and cluster auto-discovery.
+
+### Required EKS Tags
+
+- **Public subnets**: `kubernetes.io/role/elb = "1"`
+- **Private subnets**: `kubernetes.io/role/internal-elb = "1"`
+- **All subnets**: `kubernetes.io/cluster/<cluster-name> = "shared"` or `"owned"`
+
+### Usage with Auto-Generated Subnets
+
+Use `additional_public_subnet_tags` and `additional_private_subnet_tags` variables:
+
+```hcl
+module "network" {
+  # ... other configuration
+
+  additional_public_subnet_tags = {
+    "kubernetes.io/role/elb" = "1"
+    "kubernetes.io/cluster/my-eks-cluster" = "shared"
+  }
+
+  additional_private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" = "1"
+    "kubernetes.io/cluster/my-eks-cluster" = "shared"
+  }
+}
+```
+
+### Usage with Custom Subnets
+
+Add `tags` field to each subnet in `subnet_map`:
+
+```hcl
+subnet_map = {
+  "public-subnet" = {
+    # ... subnet configuration
+    tags = {
+      "kubernetes.io/role/elb" = "1"
+      "kubernetes.io/cluster/my-eks-cluster" = "shared"
+    }
+  }
+}
+```
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
