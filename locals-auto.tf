@@ -11,8 +11,8 @@ locals {
     name                    = "${var.name}-public-${az}"
     cidr_block              = cidrsubnet(local.public_cidr, local.subnet_bits, idx)
     availability_zone       = az
-    nat_gateway_name        = null
-    create_nat_gateway      = false
+    nat_gateway_name        = "${var.name}-${az}-ngw"
+    create_nat_gateway      = true
     attach_nat_gateway      = false
     attach_internet_gateway = true
 
@@ -32,7 +32,7 @@ locals {
     cidr_block              = cidrsubnet(local.private_cidr, local.subnet_bits, idx)
     availability_zone       = az
     nat_gateway_name        = "${var.name}-${az}-ngw"
-    create_nat_gateway      = true
+    create_nat_gateway      = false
     attach_nat_gateway      = true
     attach_internet_gateway = false
 
