@@ -7,12 +7,14 @@ locals {
 
   subnet_bits = ceil(log(length(var.availability_zones), 2))
 
+  # For regional NAT: don't create individual NAT gateways (Regional NAT Gateway handles it)
+  # For zonal NAT: create NAT gateway in each public subnet (existing behavior)
   public_subnet_data = { for idx, az in var.availability_zones : "${var.name}-public-${az}" => {
     name                    = "${var.name}-public-${az}"
     cidr_block              = cidrsubnet(local.public_cidr, local.subnet_bits, idx)
     availability_zone       = az
     nat_gateway_name        = "${var.name}-${az}-ngw"
-    create_nat_gateway      = true
+    create_nat_gateway      = var.nat_gateway_config.mode == "zonal" ? true : false
     attach_nat_gateway      = false
     attach_internet_gateway = true
 

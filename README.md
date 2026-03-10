@@ -19,8 +19,17 @@ Create the following resources in a single region.
 
 * VPC
 * Multi-AZ private and public subnets
-* Route tables, internet gateway, and NAT gateways
+* Route tables, internet gateway, and NAT gateways (zonal or regional)
 * Configurable VPC Endpoints
+
+### Key Features
+
+#### Regional NAT Gateway Support (Preview)
+This module now supports AWS Regional NAT Gateway configuration, which provides:
+- **Cost savings**: Reduction in NAT Gateway costs (single resource vs one per AZ)
+- **Built-in multi-AZ redundancy**: Automatic failover across availability zones
+- **Simplified management**: One NAT Gateway resource instead of multiple
+- **Auto and manual modes**: Choose between AWS-managed or custom EIP allocation
 
 ### Prerequisites
 Before using this module, ensure you have the following:
@@ -149,6 +158,68 @@ locals {
   }
 }
 
+```
+
+## NAT Gateway
+
+This module supports both traditional zonal NAT Gateways and the new Regional NAT Gateway.
+
+### Zonal NAT Gateway (Default)
+
+Traditional approach with one NAT Gateway per availability zone:
+
+```hcl
+module "network" {
+  source = "sourcefuse/arc-network/aws"
+  
+  # ... other configuration
+  
+  nat_gateway_config = {
+    mode = "zonal"  # This is the default
+  }
+}
+```
+
+### Regional NAT Gateway
+
+Single multi-AZ NAT Gateway with automatic redundancy:
+
+**Auto Mode (Recommended)**:
+```hcl
+module "network" {
+  source = "sourcefuse/arc-network/aws"
+  
+  # ... other configuration
+  
+  nat_gateway_config = {
+    mode               = "regional"
+    regional_auto_mode = true  # AWS manages AZs and EIPs
+  }
+}
+```
+
+**Manual Mode (Custom EIP Control)**:
+```hcl
+resource "aws_eip" "nat" {
+  count  = 3
+  domain = "vpc"
+}
+
+module "network" {
+  source = "sourcefuse/arc-network/aws"
+  
+  # ... other configuration
+  
+  nat_gateway_config = {
+    mode               = "regional"
+    regional_auto_mode = false
+    regional_az_eip_config = {
+      "us-east-1a" = [aws_eip.nat[0].allocation_id]
+      "us-east-1b" = [aws_eip.nat[1].allocation_id]
+      "us-east-1c" = [aws_eip.nat[2].allocation_id]
+    }
+  }
+}
 ```
 
 ## EKS Compatibility
