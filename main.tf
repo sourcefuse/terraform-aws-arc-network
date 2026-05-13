@@ -55,12 +55,15 @@ resource "aws_subnet" "this" {
     {
       Name = each.value.name
     },
-    var.tags
+    var.tags,
+    each.value.tags
   )
 }
 
 resource "aws_eip" "nat_gw" {
-  for_each = local.nat_gateway_data
+  # Only allocate EIPs for zonal mode
+  # Regional NAT Gateway manages its own EIPs in auto mode
+  for_each = var.nat_gateway_config.mode == "zonal" ? local.nat_gateway_data : {}
 
   tags = merge(
     {
@@ -72,8 +75,9 @@ resource "aws_eip" "nat_gw" {
   depends_on = [aws_internet_gateway.this]
 }
 
+# Zonal NAT Gateway (traditional approach)
 resource "aws_nat_gateway" "this" {
-  for_each = { for key, value in local.nat_gateway_data : value.nat_gateway_name => value } // This is to change the keys
+  for_each = var.nat_gateway_config.mode == "zonal" ? { for key, value in local.nat_gateway_data : value.nat_gateway_name => value } : {}
 
   allocation_id = aws_eip.nat_gw[each.value.key].id
   subnet_id     = aws_subnet.this[each.value.key].id
@@ -81,6 +85,33 @@ resource "aws_nat_gateway" "this" {
   tags = merge(
     {
       Name = each.value.nat_gateway_name
+    },
+    var.tags
+  )
+
+  depends_on = [aws_internet_gateway.this]
+}
+
+# Regional NAT Gateway (multi-AZ approach)
+# Only created when mode is "regional" 
+resource "aws_nat_gateway" "regional" {
+  count = var.nat_gateway_config.mode == "regional" ? 1 : 0
+
+  vpc_id            = aws_vpc.this.id
+  availability_mode = "regional"
+  connectivity_type = "public"
+
+  dynamic "availability_zone_address" {
+    for_each = var.nat_gateway_config.regional_auto_mode ? {} : var.nat_gateway_config.regional_az_eip_config
+    content {
+      availability_zone = availability_zone_address.key
+      allocation_ids    = availability_zone_address.value
+    }
+  }
+
+  tags = merge(
+    {
+      Name = "${var.name}-regional-nat"
     },
     var.tags
   )
@@ -103,12 +134,22 @@ resource "aws_route_table" "this" {
 }
 
 resource "aws_route" "nat" {
-  for_each = local.nat_gw_routes
+  for_each = var.nat_gateway_config.mode == "zonal" ? local.nat_gw_routes : {}
 
   route_table_id         = aws_route_table.this[each.key].id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.this[each.value.nat_gateway_name].id
 }
+
+# Route to Regional NAT Gateway
+resource "aws_route" "nat_regional" {
+  for_each = var.nat_gateway_config.mode == "regional" ? local.nat_gw_routes : {}
+
+  route_table_id         = aws_route_table.this[each.key].id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.regional[0].id
+}
+
 
 resource "aws_route" "internet_gw" {
   for_each = local.internet_gw_routes
@@ -149,11 +190,11 @@ resource "aws_route_table_association" "additional" {
 # Module for KMS Key Management
 module "kms" {
   source                  = "sourcefuse/arc-kms/aws"
-  version                 = "1.0.9"
+  version                 = "1.0.11"
   count                   = var.vpc_flow_log_config.enable ? 1 : 0
   deletion_window_in_days = var.kms_config.deletion_window_in_days
   enable_key_rotation     = var.kms_config.enable_key_rotation
-  alias                   = "alias/vpc-flow-logs-key"
+  alias                   = "alias/${var.name}/vpc-flow-logs-key"
   tags = merge(
     {
       Name = "${var.name}-kms-vpc-flowlogs"
@@ -241,4 +282,30 @@ resource "aws_flow_log" "this" {
     }
   )
 
+}
+
+
+resource "aws_vpc_dhcp_options" "this" {
+  count = var.dhcp_options_config != null ? 1 : 0
+
+  domain_name                       = var.dhcp_options_config.domain_name
+  domain_name_servers               = var.dhcp_options_config.domain_name_servers
+  ipv6_address_preferred_lease_time = var.dhcp_options_config.ipv6_address_preferred_lease_time
+  ntp_servers                       = var.dhcp_options_config.ntp_servers
+  netbios_name_servers              = var.dhcp_options_config.netbios_name_servers
+  netbios_node_type                 = var.dhcp_options_config.netbios_node_type
+
+  tags = merge(
+    {
+      Name = "${var.name}-dhcp-options"
+    },
+    var.tags,
+    var.dhcp_options_config.tags
+  )
+}
+
+resource "aws_vpc_dhcp_options_association" "this" {
+  count           = var.dhcp_options_config != null ? 1 : 0
+  vpc_id          = aws_vpc.this.id
+  dhcp_options_id = aws_vpc_dhcp_options.this[0].id
 }

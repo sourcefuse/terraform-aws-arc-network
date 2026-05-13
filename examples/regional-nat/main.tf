@@ -14,10 +14,6 @@ terraform {
 
 provider "aws" {
   region = var.region
-
-  default_tags {
-    tags = module.tags.tags
-  }
 }
 
 module "tags" {
@@ -28,12 +24,12 @@ module "tags" {
   project     = "terraform-aws-ref-arch-network"
 
   extra_tags = {
-    Example = "True"
+    Example = "regional-nat"
   }
 }
 
 ################################################################
-## network
+## network with regional NAT gateway (auto mode)
 ################################################################
 module "network" {
   source = "../../"
@@ -41,18 +37,35 @@ module "network" {
   namespace   = var.namespace
   environment = var.environment
 
-  name                    = "${var.namespace}-${var.environment}-simple"
+  name                    = "${var.namespace}-${var.environment}-regional"
   create_internet_gateway = true
-  # Enable vpc_flow_logs:If `s3_bucket_arn` is null, CloudWatch logging is enabled by default. If provided, S3 logging is enabled
-  vpc_flow_log_config = {
-    enable            = true
-    retention_in_days = 7
-    s3_bucket_arn     = ""
+
+  # Regional NAT Gateway configuration (auto mode)
+  nat_gateway_config = {
+    mode               = "regional"
+    regional_auto_mode = true
   }
 
+  ## Regional NAT Gateway configuration (with custom EIPs)
+  # nat_gateway_config = {
+  #   mode               = "regional"
+  #   regional_auto_mode = false
+  #   regional_az_eip_config = {
+  #     "us-east-1a" = [aws_eip.regional_nat[0].allocation_id]
+  #     "us-east-1b" = [aws_eip.regional_nat[1].allocation_id]
+  #     "us-east-1c" = [aws_eip.regional_nat[2].allocation_id]
+  #   }
+  # }
+
+  vpc_flow_log_config = {
+    enable            = false
+    retention_in_days = 7
+    s3_bucket_arn     = null
+  }
 
   availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
   cidr_block         = "10.0.0.0/16"
+
   vpc_endpoint_data = [
     {
       service            = "s3"
@@ -65,4 +78,7 @@ module "network" {
   ]
 
   tags = module.tags.tags
+  # tags = {
+  #   Example = "regional-nat"
+  # }
 }

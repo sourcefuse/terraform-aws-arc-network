@@ -121,6 +121,7 @@ variable "subnet_map" {
       destination_ipv6_cidr_block = optional(string, null)
       }
     )), [])
+    tags = optional(map(string), {})
   }))
   default     = null
   description = <<-EOT
@@ -146,6 +147,7 @@ variable "subnet_map" {
       - **id**: The ID of the route target (e.g., a Transit Gateway ID).
       - **cidr_block**: The destination CIDR block for the route.
       - **destination_ipv6_cidr_block**: The destination IPV6 CIDR block for the route.
+    - **tags**: Additional tags to apply to the subnet (default: {}).
   EOT
 }
 
@@ -165,6 +167,18 @@ variable "availability_zones" {
   type        = list(string)
   description = "(optional) List of availability zones , if subnet map is null , subnet map automatically derived"
   default     = []
+}
+
+variable "additional_public_subnet_tags" {
+  type        = map(string)
+  description = "(optional) Additional tags for auto-generated public subnets"
+  default     = {}
+}
+
+variable "additional_private_subnet_tags" {
+  type        = map(string)
+  description = "(optional) Additional tags for auto-generated private subnets"
+  default     = {}
 }
 
 variable "tags" {
@@ -194,5 +208,44 @@ variable "vpc_flow_log_config" {
     enable            = true
     retention_in_days = 7
     s3_bucket_arn     = null
+  }
+}
+
+variable "dhcp_options_config" {
+  description = "Configuration for VPC DHCP options. Set to null to use default AWS DHCP options."
+  type = object({
+    domain_name                       = optional(string)
+    domain_name_servers               = optional(list(string))
+    ipv6_address_preferred_lease_time = optional(number)
+    ntp_servers                       = optional(list(string))
+    netbios_name_servers              = optional(list(string))
+    netbios_node_type                 = optional(number)
+    tags                              = optional(map(string), {})
+  })
+  default = null
+}
+
+variable "nat_gateway_config" {
+  description = <<-EOT
+    NAT Gateway configuration. Supports both zonal (traditional) and regional (multi-AZ) NAT Gateways.
+    
+    - **mode**: 'zonal' (default) creates one NAT Gateway per AZ, 'regional' creates a single multi-AZ NAT Gateway
+    - **regional_auto_mode**: When mode is 'regional', set to true for auto mode (AWS manages AZs/EIPs) or false for manual mode
+    - **regional_az_eip_config**: Required when mode is 'regional' and regional_auto_mode is false. Map of AZ to list of EIP allocation IDs
+  EOT
+  type = object({
+    mode                   = optional(string, "zonal") # "zonal" or "regional"
+    regional_auto_mode     = optional(bool, true)
+    regional_az_eip_config = optional(map(list(string)), {}) # { "us-east-1a" = ["eipalloc-xxx"], "us-east-1b" = ["eipalloc-yyy"] }
+  })
+  default = {
+    mode                   = "zonal"
+    regional_auto_mode     = true
+    regional_az_eip_config = {}
+  }
+
+  validation {
+    condition     = contains(["zonal", "regional"], var.nat_gateway_config.mode)
+    error_message = "nat_gateway_config.mode must be either 'zonal' or 'regional'."
   }
 }

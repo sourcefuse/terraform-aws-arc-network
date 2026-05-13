@@ -42,3 +42,28 @@ output "vpc_default_network_acl_id" {
   description = "The ID of the network ACL created by default on VPC creation"
   value       = aws_vpc.this.default_network_acl_id
 }
+
+output "dhcp_options_id" {
+  description = "The ID of the DHCP Options Set"
+  value       = var.dhcp_options_config != null ? aws_vpc_dhcp_options.this[0].id : null
+}
+
+output "dhcp_options_arn" {
+  description = "The ARN of the DHCP Options Set"
+  value       = var.dhcp_options_config != null ? aws_vpc_dhcp_options.this[0].arn : null
+}
+
+output "nat_gateway_ids" {
+  description = "NAT Gateway IDs (zonal mode)"
+  value       = var.nat_gateway_config.mode == "zonal" ? [for nat in aws_nat_gateway.this : nat.id] : []
+}
+
+output "regional_nat_gateway_id" {
+  description = "Regional NAT Gateway ID (regional mode)"
+  value       = var.nat_gateway_config.mode == "regional" && length(aws_nat_gateway.regional) > 0 ? aws_nat_gateway.regional[0].id : null
+}
+
+output "regional_nat_gateway_addresses" {
+  description = "Regional NAT Gateway addresses per AZ"
+  value       = var.nat_gateway_config.mode == "regional" && length(aws_nat_gateway.regional) > 0 ? aws_nat_gateway.regional[0].regional_nat_gateway_address : []
+}
