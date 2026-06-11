@@ -203,11 +203,18 @@ variable "vpc_flow_log_config" {
     enable            = bool
     retention_in_days = number
     s3_bucket_arn     = string
+    traffic_type      = optional(string, "ALL")
   })
   default = {
     enable            = true
     retention_in_days = 7
     s3_bucket_arn     = null
+    traffic_type      = "ALL"
+  }
+
+  validation {
+    condition     = contains(["ACCEPT", "REJECT", "ALL"], var.vpc_flow_log_config.traffic_type)
+    error_message = "vpc_flow_log_config.traffic_type must be one of: ACCEPT, REJECT, ALL."
   }
 }
 
@@ -228,7 +235,7 @@ variable "dhcp_options_config" {
 variable "nat_gateway_config" {
   description = <<-EOT
     NAT Gateway configuration. Supports both zonal (traditional) and regional (multi-AZ) NAT Gateways.
-    
+
     - **mode**: 'zonal' (default) creates one NAT Gateway per AZ, 'regional' creates a single multi-AZ NAT Gateway
     - **regional_auto_mode**: When mode is 'regional', set to true for auto mode (AWS manages AZs/EIPs) or false for manual mode
     - **regional_az_eip_config**: Required when mode is 'regional' and regional_auto_mode is false. Map of AZ to list of EIP allocation IDs
