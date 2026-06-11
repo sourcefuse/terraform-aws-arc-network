@@ -267,7 +267,7 @@ resource "aws_iam_role_policy_attachment" "attach_flow_logs_policy" {
 
 resource "aws_flow_log" "this" {
   count        = var.vpc_flow_log_config.enable ? 1 : 0
-  traffic_type = "ALL"
+  traffic_type = var.vpc_flow_log_config.traffic_type
   vpc_id       = aws_vpc.this.id
 
 

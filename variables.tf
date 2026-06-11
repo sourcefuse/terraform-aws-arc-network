@@ -203,11 +203,18 @@ variable "vpc_flow_log_config" {
     enable            = bool
     retention_in_days = number
     s3_bucket_arn     = string
+    traffic_type      = optional(string, "ALL")
   })
   default = {
     enable            = true
     retention_in_days = 7
     s3_bucket_arn     = null
+    traffic_type      = "ALL"
+  }
+
+  validation {
+    condition     = contains(["ACCEPT", "REJECT", "ALL"], var.vpc_flow_log_config.traffic_type)
+    error_message = "vpc_flow_log_config.traffic_type must be one of: ACCEPT, REJECT, ALL."
   }
 }
 
